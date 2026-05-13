@@ -38,6 +38,7 @@ class AuthController extends GetxController {
 
       if (response.status == "SUCCESS") {
         await preferences.putBool(SharedPreference.isLogin, true);
+        await preferences.putString(SharedPreference.userType, "user");
 
         await preferences.putString(
           SharedPreference.userLoginData,

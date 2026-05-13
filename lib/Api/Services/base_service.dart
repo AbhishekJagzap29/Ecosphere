@@ -19,4 +19,7 @@ class ApiRouts {
 
   /// SERVICE DETAILS API
   static String serviceDetailsAPI = "$base/api/service_details";
+
+  /// SERVICE REQUEST API
+  static String createServiceRequestAPI = "$base/api/create_service_request";
 }
