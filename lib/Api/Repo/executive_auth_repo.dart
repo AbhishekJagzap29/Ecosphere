@@ -15,11 +15,15 @@ class ExecutiveAuthRepo {
     required String password,
   }) async {
     final response = await APIService().getResponse(
-      url: ApiRouts.loginAPI,
+      url: ApiRouts.webSessionAuthenticateAPI,
       apiType: APIType.aPost,
       body: {
-        'login': login,
-        'password': password,
+        'jsonrpc': '2.0',
+        'params': {
+          'db': ApiRouts.databaseName,
+          'login': login,
+          'password': password,
+        },
       },
       header: header,
     );

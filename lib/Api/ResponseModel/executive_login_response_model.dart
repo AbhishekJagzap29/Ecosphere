@@ -28,13 +28,45 @@ class ExecutiveLoginResponseModel {
   bool get isSuccess => status?.toUpperCase() == 'SUCCESS';
 
   factory ExecutiveLoginResponseModel.fromJson(Map<String, dynamic> json) {
+    if (json['error'] is Map<String, dynamic>) {
+      final error = json['error'] as Map<String, dynamic>;
+      final data = error['data'];
+
+      return ExecutiveLoginResponseModel(
+        status: 'FAILED',
+        message: data is Map<String, dynamic>
+            ? data['message']?.toString() ??
+                error['message']?.toString() ??
+                'Login failed'
+            : error['message']?.toString() ?? 'Login failed',
+      );
+    }
+
+    if (json['result'] is Map<String, dynamic>) {
+      final result = json['result'] as Map<String, dynamic>;
+      final uid = result['uid'];
+
+      return ExecutiveLoginResponseModel(
+        status: uid == false || uid == null ? 'FAILED' : 'SUCCESS',
+        message: uid == false || uid == null
+            ? 'Invalid login or password'
+            : 'Login successful',
+        userId: _readInt(uid),
+        name: (result['name'] ?? result['partner_display_name'])?.toString(),
+        login: (result['username'] ?? result['login'])?.toString(),
+        sessionId: result['session_id']?.toString(),
+        data: result,
+      );
+    }
+
     final data = json['data'];
     final dataMap = data is Map<String, dynamic> ? data : null;
 
     return ExecutiveLoginResponseModel(
       status: json['status']?.toString(),
       message: json['message']?.toString(),
-      userId: _readInt(json['user_id'] ?? dataMap?['user_id'] ?? dataMap?['id']),
+      userId:
+          _readInt(json['user_id'] ?? dataMap?['user_id'] ?? dataMap?['id']),
       name: (json['name'] ?? dataMap?['name'])?.toString(),
       login: (json['login'] ?? dataMap?['login'])?.toString(),
       sessionId: (json['session_id'] ?? dataMap?['session_id'])?.toString(),

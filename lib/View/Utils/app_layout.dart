@@ -12,22 +12,15 @@ successSnackBar(
     GetSnackBar(
       snackStyle: SnackStyle.FLOATING,
       snackPosition: SnackPosition.BOTTOM,
-
       margin: const EdgeInsets.symmetric(
         horizontal: 20,
         vertical: 25,
       ),
-
       borderRadius: 18,
-
       backgroundColor: const Color(0xFF171717),
-
       borderWidth: 1.3,
-
       borderColor: goldPrimaryColor.withOpacity(0.35),
-
       barBlur: 18,
-
       boxShadows: [
         BoxShadow(
           color: goldPrimaryColor.withOpacity(0.12),
@@ -40,14 +33,11 @@ successSnackBar(
           offset: Offset(0, 8),
         ),
       ],
-
       duration: const Duration(seconds: 2),
-
       padding: const EdgeInsets.symmetric(
         horizontal: 18,
         vertical: 16,
       ),
-
       titleText: Row(
         children: [
           Container(
@@ -66,9 +56,7 @@ successSnackBar(
               size: 20,
             ),
           ),
-
           const SizedBox(width: 12),
-
           Expanded(
             child: Text(
               title.toString(),
@@ -82,7 +70,6 @@ successSnackBar(
           ),
         ],
       ),
-
       messageText: Padding(
         padding: const EdgeInsets.only(
           left: 50,
@@ -102,7 +89,6 @@ successSnackBar(
   );
 }
 
-
 // ERROR SNACKBAR
 
 errorSnackBar(
@@ -113,22 +99,15 @@ errorSnackBar(
     GetSnackBar(
       snackStyle: SnackStyle.FLOATING,
       snackPosition: SnackPosition.BOTTOM,
-
       margin: const EdgeInsets.symmetric(
         horizontal: 20,
         vertical: 25,
       ),
-
       borderRadius: 18,
-
       backgroundColor: const Color(0xFF1A1515),
-
       borderWidth: 1.3,
-
       borderColor: const Color(0xFF8B2E2E),
-
       barBlur: 18,
-
       boxShadows: [
         BoxShadow(
           color: const Color(0xFF8B2E2E).withOpacity(0.16),
@@ -141,14 +120,11 @@ errorSnackBar(
           offset: Offset(0, 8),
         ),
       ],
-
       duration: const Duration(seconds: 2),
-
       padding: const EdgeInsets.symmetric(
         horizontal: 18,
         vertical: 16,
       ),
-
       titleText: Row(
         children: [
           Container(
@@ -167,9 +143,7 @@ errorSnackBar(
               size: 20,
             ),
           ),
-
           const SizedBox(width: 12),
-
           Expanded(
             child: Text(
               title.toString(),
@@ -183,7 +157,6 @@ errorSnackBar(
           ),
         ],
       ),
-
       messageText: Padding(
         padding: const EdgeInsets.only(
           left: 50,
@@ -191,6 +164,8 @@ errorSnackBar(
         ),
         child: Text(
           error,
+          maxLines: 4,
+          overflow: TextOverflow.ellipsis,
           style: TextStyle(
             color: Colors.white.withOpacity(0.82),
             fontSize: 13.5,

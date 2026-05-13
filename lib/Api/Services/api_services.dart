@@ -101,13 +101,18 @@ class APIService {
   }
 
   dynamic returnResponse(int status, String result) {
-    final isJsonResponse = result.trimLeft().startsWith('{') ||
-        result.trimLeft().startsWith('[');
+    final isJsonResponse =
+        result.trimLeft().startsWith('{') || result.trimLeft().startsWith('[');
 
     switch (status) {
       case 200:
       case 201:
         if (!isJsonResponse) {
+          if (_isLoginPage(result)) {
+            throw UnauthorisedException(
+              'Session expired. Please login again.',
+            );
+          }
           throw FetchDataException(result);
         }
         return jsonDecode(result);
@@ -144,5 +149,12 @@ class APIService {
         }
         throw FetchDataException('Internal Server Error');
     }
+  }
+
+  bool _isLoginPage(String result) {
+    final value = result.toLowerCase();
+    return value.contains('oe_login_form') ||
+        value.contains('/web/login') ||
+        value.contains('__session_info__') && value.contains('is_public');
   }
 }
