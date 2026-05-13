@@ -35,18 +35,20 @@ class ExecutiveAuthController extends GetxController {
           SharedPreference.userName,
           response.login ?? response.name ?? login,
         );
-        if (response.sessionId?.isNotEmpty == true) {
+        final sessionCookie = _sessionCookie(response.sessionId);
+        if (sessionCookie != null) {
           await preferences.putString(
             SharedPreference.sessionId,
-            response.sessionId!,
+            sessionCookie,
           );
         }
 
         successSnackBar('Success', response.message ?? 'Login successful');
       } else {
-        final message = response.message?.trim().toLowerCase() == 'access denied'
-            ? 'Invalid Credentials'
-            : response.message ?? 'Invalid Credentials';
+        final message =
+            response.message?.trim().toLowerCase() == 'access denied'
+                ? 'Invalid Credentials'
+                : response.message ?? 'Invalid Credentials';
         errorSnackBar('Login Failed', message);
       }
 
@@ -59,5 +61,12 @@ class ExecutiveAuthController extends GetxController {
       isLoading = false;
       update();
     }
+  }
+
+  String? _sessionCookie(String? sessionId) {
+    final value = sessionId?.trim();
+    if (value == null || value.isEmpty) return null;
+    if (value.contains('=')) return value.split(';').first;
+    return 'session_id=$value';
   }
 }

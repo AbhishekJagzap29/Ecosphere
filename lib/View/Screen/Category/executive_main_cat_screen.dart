@@ -1,21 +1,21 @@
 import 'package:echosphere/Api/ResponseModel/service_response_model.dart';
+import 'package:echosphere/View/Constant/app_color.dart';
 import 'package:echosphere/View/Constant/app_string.dart';
 import 'package:echosphere/View/Controller/service_controller.dart';
-// import 'package:echosphere/View/Screen/BottomBarScreen/sub_service_screen.dart';
+import 'package:echosphere/View/Screen/ServiceRequest/create_service_request_screen.dart';
 import 'package:echosphere/View/Screen/Subcategory/sub_cat_screen.dart';
-import 'package:echosphere/View/Constant/app_color.dart';
 import 'package:echosphere/View/Widgets/search_filter.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class ServiceScreen extends StatefulWidget {
-  const ServiceScreen({super.key});
+class ExecutiveServiceScreen extends StatefulWidget {
+  const ExecutiveServiceScreen({super.key});
 
   @override
-  State<ServiceScreen> createState() => _ServiceScreenState();
+  State<ExecutiveServiceScreen> createState() => _ExecutiveServiceScreenState();
 }
 
-class _ServiceScreenState extends State<ServiceScreen> {
+class _ExecutiveServiceScreenState extends State<ExecutiveServiceScreen> {
   final ServiceController serviceController =
       Get.isRegistered<ServiceController>()
           ? Get.find<ServiceController>()
@@ -54,6 +54,21 @@ class _ServiceScreenState extends State<ServiceScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: goldPrimaryColor,
+        foregroundColor: luxuryBlackColor,
+        onPressed: () async {
+          final created = await Navigator.of(context).push<bool>(
+            MaterialPageRoute(
+              builder: (_) => const CreateServiceRequestScreen(),
+            ),
+          );
+          if (created == true) {
+            _refreshServices();
+          }
+        },
+        child: const Icon(Icons.add_rounded),
+      ),
       body: Padding(
         padding: const EdgeInsets.fromLTRB(16, 18, 16, 0),
         child: Column(

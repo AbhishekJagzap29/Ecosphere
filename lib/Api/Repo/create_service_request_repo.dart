@@ -8,11 +8,12 @@ import 'package:echosphere/View/Constant/shared_prefs.dart';
 class CreateServiceRequestRepo {
   Map<String, String> get header {
     final sessionId = preferences.getString(SharedPreference.sessionId);
+    final sessionCookie = _sessionCookie(sessionId);
 
     return {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
-      if (sessionId != null && sessionId.isNotEmpty) 'Cookie': sessionId,
+      if (sessionCookie != null) 'Cookie': sessionCookie,
     };
   }
 
@@ -29,5 +30,12 @@ class CreateServiceRequestRepo {
     log('createServiceRequestResponse >>> $response');
 
     return CreateServiceRequestResponseModel.fromJson(response);
+  }
+
+  String? _sessionCookie(String? sessionId) {
+    final value = sessionId?.trim();
+    if (value == null || value.isEmpty) return null;
+    if (value.contains('=')) return value.split(';').first;
+    return 'session_id=$value';
   }
 }

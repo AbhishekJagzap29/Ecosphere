@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:echosphere/Api/Repo/create_service_request_repo.dart';
 import 'package:echosphere/Api/ResponseModel/create_service_request_response_model.dart';
+import 'package:echosphere/View/Constant/shared_prefs.dart';
 import 'package:echosphere/View/Utils/app_layout.dart';
 import 'package:get/get.dart';
 
@@ -29,6 +30,8 @@ class CreateServiceRequestController extends GetxController {
         'phone': phone.trim(),
         if (_hasText(discount)) 'discount': discount!.trim(),
         if (_hasText(image)) 'image': image!.trim(),
+        if (_executiveUserId != null) 'user_id': _executiveUserId,
+        if (_executiveUserId != null) 'executive_user_id': _executiveUserId,
       };
 
       final response = await CreateServiceRequestRepo().create(body: body);
@@ -57,4 +60,12 @@ class CreateServiceRequestController extends GetxController {
   }
 
   bool _hasText(String? value) => value != null && value.trim().isNotEmpty;
+
+  int? get _executiveUserId {
+    final userType = preferences.getString(SharedPreference.userType);
+    if (userType != 'executive') return null;
+
+    final userId = preferences.getString(SharedPreference.userId);
+    return int.tryParse(userId ?? '');
+  }
 }
