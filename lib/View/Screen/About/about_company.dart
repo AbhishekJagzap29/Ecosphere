@@ -250,9 +250,15 @@ class _PremiumCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  page.showLogo
-                      ? const _PremiumLogo()
-                      : _GoldIcon(icon: page.icon),
+                  // page.showLogo
+                  //     ? const _PremiumLogo()
+                  //     : _GoldIcon(icon: page.icon),
+                  page.title == 'Founder & CEO'
+    ? const _CeoImage()
+    : page.showLogo
+        ? const _PremiumLogo()
+        : _GoldIcon(icon: page.icon),
+        
                   const SizedBox(height: 24),
                   Text(
                     page.title,
@@ -509,6 +515,36 @@ class _BackgroundGlow extends StatelessWidget {
     );
   }
 }
+ class _CeoImage extends StatelessWidget {
+  const _CeoImage();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 130,
+      width: 130,
+      padding: const EdgeInsets.all(4),
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: goldPrimaryColor,
+        boxShadow: [
+          BoxShadow(
+            color: goldPrimaryColor.withOpacity(0.35),
+            blurRadius: 28,
+            spreadRadius: 4,
+          ),
+        ],
+      ),
+      child: ClipOval(
+        child: Image.asset(
+          'assets/images/Ceo.png',
+          fit: BoxFit.cover,
+          alignment: Alignment.topCenter,
+        ),
+      ),
+    );
+  }
+}
 
 class _GlowSpot extends StatelessWidget {
   final double size;
@@ -531,93 +567,3 @@ class _GlowSpot extends StatelessWidget {
     );
   }
 }
-
-
-
-
-
-
-
-
-// import 'package:echosphere/View/Constant/app_color.dart';
-// import 'package:flutter/material.dart';
-
-// class AboutCompanyScreen extends StatelessWidget {
-//   const AboutCompanyScreen({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return const _AboutDetailScreen(
-//       title: 'About Company',
-//       icon: Icons.people_alt_rounded,
-//       heading: 'Echosphere Multi Services',
-//       description:
-//           'Echosphere connects people with trusted local services, useful updates, events, and member-first support through one simple platform.',
-//     );
-//   }
-// }
-
-// class _AboutDetailScreen extends StatelessWidget {
-//   final String title;
-//   final IconData icon;
-//   final String heading;
-//   final String description;
-
-//   const _AboutDetailScreen({
-//     required this.title,
-//     required this.icon,
-//     required this.heading,
-//     required this.description,
-//   });
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(title: Text(title)),
-//       body: Padding(
-//         padding: const EdgeInsets.all(18),
-//         child: Container(
-//           width: double.infinity,
-//           padding: const EdgeInsets.all(22),
-//           decoration: BoxDecoration(
-//             color: premiumSurfaceColor,
-//             borderRadius: BorderRadius.circular(20),
-//             border: Border.all(color: premiumGoldBorderColor),
-//             boxShadow: const [
-//               BoxShadow(
-//                 color: premiumShadowColor,
-//                 blurRadius: 22,
-//                 offset: Offset(0, 10),
-//               ),
-//             ],
-//           ),
-//           child: Column(
-//             mainAxisSize: MainAxisSize.min,
-//             crossAxisAlignment: CrossAxisAlignment.start,
-//             children: [
-//               Icon(icon, color: goldPrimaryColor, size: 42),
-//               const SizedBox(height: 18),
-//               Text(
-//                 heading,
-//                 style: const TextStyle(
-//                   color: premiumTextColor,
-//                   fontSize: 22,
-//                   fontWeight: FontWeight.w900,
-//                 ),
-//               ),
-//               const SizedBox(height: 12),
-//               Text(
-//                 description,
-//                 style: const TextStyle(
-//                   color: premiumMutedTextColor,
-//                   fontSize: 14,
-//                   height: 1.5,
-//                 ),
-//               ),
-//             ],
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }

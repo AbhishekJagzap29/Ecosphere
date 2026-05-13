@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'package:echosphere/View/Constant/app_color.dart';
+import 'package:echosphere/View/Constant/shared_prefs.dart';
+import 'package:echosphere/View/Screen/AuthScreen/user_registration_screen.dart';
 import 'package:echosphere/View/Screen/BottomBarScreen/home_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -17,9 +19,15 @@ class _SplashScreenState extends State<SplashScreen> {
     Timer(const Duration(seconds: 3), () {
       if (!mounted) return;
 
+      final isUserRegistered = preferences.getBool(
+        SharedPreference.isUserRegistered,
+      );
+
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-          builder: (context) => const HomeScreen(),
+          builder: (context) => isUserRegistered == true
+              ? const HomeScreen()
+              : const UserRegistrationScreen(),
         ),
       );
     });

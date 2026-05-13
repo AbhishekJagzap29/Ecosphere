@@ -24,7 +24,10 @@ class SharedPreference {
   static const isUserRegistered = "isUserRegistered";
   static const registeredFullName = "registeredFullName";
   static const registeredMobileNo = "registeredMobileNo";
+  static const registeredCustomerId = "registeredCustomerId";
+  static const registeredTalukaId = "registeredTalukaId";
   static const registeredTaluka = "registeredTaluka";
+  static const registeredIsCardHolder = "registeredIsCardHolder";
 
   Future<void> logOut() async {
     await _preferences?.clear();

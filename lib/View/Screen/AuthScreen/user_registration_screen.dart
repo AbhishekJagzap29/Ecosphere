@@ -1,8 +1,13 @@
+import 'package:echosphere/Api/ResponseModel/taluka_response_model.dart';
 import 'package:echosphere/View/Constant/app_color.dart';
 import 'package:echosphere/View/Constant/shared_prefs.dart';
+import 'package:echosphere/View/Controller/customer_registration_controller.dart';
+import 'package:echosphere/View/Controller/taluka_controller.dart';
 import 'package:echosphere/View/Screen/BottomBarScreen/home_screen.dart';
+import 'package:echosphere/View/Utils/app_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 
 class UserRegistrationScreen extends StatefulWidget {
   const UserRegistrationScreen({super.key});
@@ -16,64 +21,46 @@ class _UserRegistrationScreenState extends State<UserRegistrationScreen> {
   final _nameController = TextEditingController();
   final _mobileController = TextEditingController();
   final _talukaController = TextEditingController();
+  late final CustomerRegistrationController _registrationController;
+  TalukaData? _selectedTaluka;
+  bool _isCardHolder = false;
 
-  static const List<String> _talukas = [
-    'Ajra',
-    'Akole',
-    'Ambegaon',
-    'Atpadi',
-    'Baramati',
-    'Bhor',
-    'Bhudargad',
-    'Chandgad',
-    'Daund',
-    'Gadhinglaj',
-    'Hatkanangle',
-    'Haveli',
-    'Indapur',
-    'Jaoli',
-    'Jat',
-    'Junnar',
-    'Kadegaon',
-    'Kagal',
-    'Karad',
-    'Karvir',
-    'Kavathe Mahankal',
-    'Khanapur',
-    'Khatav',
-    'Khed',
-    'Kolhapur',
-    'Koregaon',
-    'Mahabaleshwar',
-    'Man',
-    'Maval',
-    'Miraj',
-    'Mulshi',
-    'Palus',
-    'Panhala',
-    'Patan',
-    'Phaltan',
-    'Pune City',
-    'Purandar',
-    'Radhanagari',
-    'Sangamner',
-    'Satara',
-    'Shahuwadi',
-    'Shirala',
-    'Shirol',
-    'Shirur',
-    'Tasgaon',
-    'Velhe',
-    'Wai',
-    'Walwa',
-    'Kopergaon',
-    'Yeola',
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _registrationController = Get.isRegistered<CustomerRegistrationController>()
+        ? Get.find<CustomerRegistrationController>()
+        : Get.put(CustomerRegistrationController());
+    final talukaController = Get.isRegistered<TalukaController>()
+        ? Get.find<TalukaController>()
+        : Get.put(TalukaController());
+    talukaController.getTalukas();
+  }
 
   Future<void> _submitRegistration() async {
     FocusScope.of(context).unfocus();
 
     if (!_formKey.currentState!.validate()) {
+      return;
+    }
+
+    final selectedTalukaId = _selectedTaluka?.id;
+    if (selectedTalukaId == null) {
+      errorSnackBar(
+        'Taluka Required',
+        'Please select a valid taluka from the dropdown',
+      );
+      return;
+    }
+
+    final response = await _registrationController.registerCustomer(
+      name: _nameController.text.trim(),
+      phone: _mobileController.text.trim(),
+      talukaId: selectedTalukaId,
+      isCardHolder: _isCardHolder,
+    );
+
+    if (response?.status?.toLowerCase() != 'success') {
       return;
     }
 
@@ -89,6 +76,20 @@ class _UserRegistrationScreenState extends State<UserRegistrationScreen> {
       SharedPreference.registeredTaluka,
       _talukaController.text.trim(),
     );
+    await preferences.putInt(
+      SharedPreference.registeredTalukaId,
+      selectedTalukaId,
+    );
+    await preferences.putBool(
+      SharedPreference.registeredIsCardHolder,
+      _isCardHolder,
+    );
+    if (response?.customerId != null) {
+      await preferences.putInt(
+        SharedPreference.registeredCustomerId,
+        response!.customerId!,
+      );
+    }
     await preferences.putBool(SharedPreference.isUserRegistered, true);
 
     if (!mounted) return;
@@ -235,23 +236,75 @@ class _UserRegistrationScreenState extends State<UserRegistrationScreen> {
                             },
                           ),
                           const SizedBox(height: 18),
-                          _TalukaAutocomplete(
-                            controller: _talukaController,
-                            talukas: _talukas,
+                          GetBuilder<TalukaController>(
+                            builder: (controller) {
+                              if (controller.isLoading &&
+                                  controller.talukas.isEmpty) {
+                                return const _TalukaLoadingField();
+                              }
+
+                              if (controller.talukas.isEmpty) {
+                                return _TalukaErrorField(
+                                  onRetry: controller.getTalukas,
+                                );
+                              }
+
+                              return _TalukaAutocomplete(
+                                controller: _talukaController,
+                                talukas: controller.talukas,
+                                selectedTaluka: _selectedTaluka,
+                                onSelected: (taluka) {
+                                  setState(() {
+                                    _selectedTaluka = taluka;
+                                  });
+                                },
+                                onChanged: (value) {
+                                  if (_selectedTaluka?.name != value) {
+                                    setState(() {
+                                      _selectedTaluka = null;
+                                    });
+                                  }
+                                },
+                              );
+                            },
+                          ),
+                          const SizedBox(height: 18),
+                          _DiscountCardHolderField(
+                            value: _isCardHolder,
+                            onChanged: (value) {
+                              setState(() {
+                                _isCardHolder = value;
+                              });
+                            },
                           ),
                           const SizedBox(height: 32),
                           SizedBox(
                             width: double.infinity,
-                            child: ElevatedButton(
-                              onPressed: _submitRegistration,
-                              child: const Text(
-                                'Submit',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  letterSpacing: 1,
-                                ),
-                              ),
+                            child: GetBuilder<CustomerRegistrationController>(
+                              builder: (controller) {
+                                return ElevatedButton(
+                                  onPressed: controller.isLoading
+                                      ? null
+                                      : _submitRegistration,
+                                  child: controller.isLoading
+                                      ? const SizedBox(
+                                          width: 20,
+                                          height: 20,
+                                          child: CircularProgressIndicator(
+                                            color: blackColor,
+                                            strokeWidth: 2,
+                                          ),
+                                        )
+                                      : const Text(
+                                          'Submit',
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                            letterSpacing: 1,
+                                          ),
+                                        ),
+                                );
+                              },
                             ),
                           ),
                         ],
@@ -268,13 +321,126 @@ class _UserRegistrationScreenState extends State<UserRegistrationScreen> {
   }
 }
 
+class _DiscountCardHolderField extends StatelessWidget {
+  final bool value;
+  final ValueChanged<bool> onChanged;
+
+  const _DiscountCardHolderField({
+    required this.value,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SwitchListTile(
+      value: value,
+      onChanged: onChanged,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+      activeColor: goldPrimaryColor,
+      tileColor: premiumSurfaceTintColor,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(14),
+        side: const BorderSide(color: premiumBorderColor),
+      ),
+      title: const Text(
+        'Are you discount card holder?',
+        style: TextStyle(
+          color: premiumTextColor,
+          fontSize: 15,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+      subtitle: Text(
+        value ? 'Yes' : 'No',
+        style: const TextStyle(
+          color: premiumMutedTextColor,
+          fontSize: 13,
+        ),
+      ),
+      secondary: const Icon(
+        Icons.card_membership_outlined,
+        color: goldPrimaryColor,
+      ),
+    );
+  }
+}
+
+class _TalukaLoadingField extends StatelessWidget {
+  const _TalukaLoadingField();
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      readOnly: true,
+      decoration: const InputDecoration(
+        labelText: 'Taluka',
+        hintText: 'Loading talukas...',
+        prefixIcon: Icon(Icons.location_on_outlined),
+        suffixIcon: Padding(
+          padding: EdgeInsets.all(14),
+          child: SizedBox(
+            width: 18,
+            height: 18,
+            child: CircularProgressIndicator(
+              color: goldPrimaryColor,
+              strokeWidth: 2,
+            ),
+          ),
+        ),
+      ),
+      validator: (_) => 'Please wait until talukas are loaded',
+    );
+  }
+}
+
+class _TalukaErrorField extends StatelessWidget {
+  final Future<void> Function() onRetry;
+
+  const _TalukaErrorField({
+    required this.onRetry,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        TextFormField(
+          readOnly: true,
+          decoration: const InputDecoration(
+            labelText: 'Taluka',
+            hintText: 'Unable to load talukas',
+            prefixIcon: Icon(Icons.location_off_outlined),
+          ),
+          validator: (_) => 'Please load and select taluka',
+        ),
+        const SizedBox(height: 10),
+        Align(
+          alignment: Alignment.centerRight,
+          child: OutlinedButton.icon(
+            onPressed: onRetry,
+            icon: const Icon(Icons.refresh),
+            label: const Text('Retry'),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 class _TalukaAutocomplete extends StatefulWidget {
   final TextEditingController controller;
-  final List<String> talukas;
+  final List<TalukaData> talukas;
+  final TalukaData? selectedTaluka;
+  final ValueChanged<TalukaData> onSelected;
+  final ValueChanged<String> onChanged;
 
   const _TalukaAutocomplete({
     required this.controller,
     required this.talukas,
+    required this.selectedTaluka,
+    required this.onSelected,
+    required this.onChanged,
   });
 
   @override
@@ -298,7 +464,7 @@ class _TalukaAutocompleteState extends State<_TalukaAutocomplete> {
 
   @override
   Widget build(BuildContext context) {
-    return RawAutocomplete<String>(
+    return RawAutocomplete<TalukaData>(
       textEditingController: widget.controller,
       focusNode: _focusNode,
       optionsBuilder: (textEditingValue) {
@@ -308,10 +474,11 @@ class _TalukaAutocompleteState extends State<_TalukaAutocomplete> {
         }
 
         return widget.talukas.where(
-          (taluka) => taluka.toLowerCase().contains(query),
+          (taluka) => (taluka.name ?? '').toLowerCase().contains(query),
         );
       },
-      displayStringForOption: (option) => option,
+      displayStringForOption: (option) => option.name ?? '',
+      onSelected: widget.onSelected,
       fieldViewBuilder: (
         context,
         textEditingController,
@@ -329,16 +496,20 @@ class _TalukaAutocompleteState extends State<_TalukaAutocomplete> {
             prefixIcon: Icon(Icons.location_on_outlined),
             suffixIcon: Icon(Icons.keyboard_arrow_down),
           ),
+          onChanged: widget.onChanged,
           validator: (value) {
             final taluka = value?.trim() ?? '';
             if (taluka.isEmpty) {
               return 'Taluka is required';
             }
 
+            final selectedMatchesText =
+                widget.selectedTaluka?.name?.toLowerCase() ==
+                    taluka.toLowerCase();
             final isKnownTaluka = widget.talukas.any(
-              (option) => option.toLowerCase() == taluka.toLowerCase(),
+              (option) => option.name?.toLowerCase() == taluka.toLowerCase(),
             );
-            if (!isKnownTaluka) {
+            if (!selectedMatchesText || !isKnownTaluka) {
               return 'Please select a taluka from the dropdown';
             }
 
@@ -372,7 +543,7 @@ class _TalukaAutocompleteState extends State<_TalukaAutocomplete> {
                   return ListTile(
                     dense: true,
                     title: Text(
-                      option,
+                      option.name ?? '',
                       style: const TextStyle(color: premiumTextColor),
                     ),
                     onTap: () => onSelected(option),
