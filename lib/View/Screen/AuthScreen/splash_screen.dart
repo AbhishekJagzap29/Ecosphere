@@ -1,7 +1,7 @@
 import 'dart:async';
+import 'package:echosphere/View/Constant/app_color.dart';
+import 'package:echosphere/View/Screen/BottomBarScreen/home_screen.dart';
 import 'package:flutter/material.dart';
-// ignore: depend_on_referenced_packages
-import 'package:echosphere/View/Screen/AuthScreen/login_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -15,8 +15,12 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     Timer(const Duration(seconds: 3), () {
+      if (!mounted) return;
+
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const LoginScreen()),
+        MaterialPageRoute(
+          builder: (context) => const HomeScreen(),
+        ),
       );
     });
   }
@@ -24,44 +28,68 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF1B5E20), // Deep Green
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // Logo
-            Image.asset(
-              'assets/images/logo.png',
-              width: 150,
-              height: 150,
-              errorBuilder: (context, error, stackTrace) {
-                return const Icon(
-                  Icons.eco,
-                  size: 100,
-                  color: Colors.white, // White icon for contrast
-                );
-              },
-            ),
-            const SizedBox(height: 20),
-            const Text(
-              'ECHOSPHERE',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 2,
-                color: Colors.white, // White text
+      backgroundColor: luxuryBlackColor,
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: RadialGradient(
+            center: Alignment.center,
+            radius: 0.72,
+            colors: [
+              Color(0x331A1A1A),
+              luxuryBlackColor,
+            ],
+          ),
+        ),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(18),
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: premiumGoldShadowColor,
+                      blurRadius: 46,
+                      spreadRadius: 8,
+                    ),
+                  ],
+                ),
+                child: Image.asset(
+                  'assets/images/logo.png',
+                  width: 220,
+                  height: 220,
+                  errorBuilder: (context, error, stackTrace) {
+                    return const Icon(
+                      Icons.eco,
+                      size: 132,
+                      color: goldPrimaryColor,
+                    );
+                  },
+                ),
               ),
-            ),
-            const SizedBox(height: 10),
-            const Text(
-              'Global Services, Connected Future',
-              style: TextStyle(
-                fontSize: 14,
-                fontStyle: FontStyle.italic,
-                color: Colors.white70, // Light text
+              const SizedBox(height: 20),
+              const Text(
+                'ECHOSPHERE',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 2,
+                  color: whiteColor,
+                ),
               ),
-            ),
-          ],
+              const SizedBox(height: 10),
+              const Text(
+                'Global Services, Connected Future',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontStyle: FontStyle.italic,
+                  color: goldHighlightColor,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

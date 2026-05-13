@@ -8,9 +8,32 @@ class AppString {
   static const welcomeBack = "Welcome Back";
   static const loginToAccount = "Login to your account";
   static const username = "Username";
+  static const name = "Name";
+  static const email = "Email";
   static const password = "Password";
   static const forgotPassword = "Forgot Password?";
+  static const forgotPasswordSubheading = "Enter your number to verify";
+  static const number = "Number";
+  static const numberHint = "Enter Number";
+  static const otp = "OTP";
+  static const otpHint = "Enter OTP";
+  static const sendOtp = "OTP";
   static const login = "LOGIN";
+  static const createAccount = "Create Account";
+  static const registerHeading = "Create your account";
+  static const registerSubheading = "Sign up to continue";
+  static const enterName = "Enter Name";
+  static const emailHint = "Enter Email";
+  static const passwordHint = "Enter Password";
+  static const dontHaveAccount = "Don't have an Account?";
+  static const alreadyHaveAccount = "Already have an Account?";
+  static const signUp = "Sign Up";
+  static const signIn = "Sign In";
+  static const requiredField = "Required field";
+  static const enterSignUpDetails = "Please enter Sign Up Details";
+  static const nameRequired = "Name is Required";
+  static const emailRequired = "Email is Required";
+  static const passwordRequired = "Password is Required";
   
   // Home Screen
   static const helloUser = "Hel User";
@@ -26,6 +49,15 @@ class AppString {
   static const searchServices = "Search services...";
   static const noServicesFound = "No services found";
   static const tryDifferentSearch = "Try a different search term";
+
+  // Sub Service Screen
+  static const subServices = "Sub Services";
+  static const searchSubServices = "Search sub services...";
+  static const noSubServicesFound = "No sub services found";
+
+  // Service Detail Screen
+  static const serviceDetails = "Service Details";
+  static const noServiceDetailsFound = "No service details found";
   
   // Service Categories
   static const healthcare = "Healthcare";
@@ -52,7 +84,7 @@ class AppString {
   static const specialistsDesc = "Cardiologist, Dermatologist, Orthopedic, etc.";
   static const dentistsDesc = "Dental care services";
   
-  // Profile Screen
+  // Profile
   static const ehcosphere = "EHCOSPHERE";
   static const cardNumber = "1234  5678  9012  3456";
   static const memberId = "MEMBER ID";

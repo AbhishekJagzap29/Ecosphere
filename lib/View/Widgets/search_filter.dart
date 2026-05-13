@@ -1,3 +1,4 @@
+import 'package:echosphere/View/Constant/app_color.dart';
 import 'package:flutter/material.dart';
 
 class SearchFilterBar extends StatelessWidget {
@@ -19,16 +20,17 @@ class SearchFilterBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 10),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
+        color: premiumSurfaceTintColor,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: premiumGoldBorderColor),
+        boxShadow: const [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            offset: const Offset(0, 2),
-            blurRadius: 8,
+            color: premiumShadowColor,
+            offset: Offset(0, 8),
+            blurRadius: 20,
           ),
         ],
       ),
@@ -36,7 +38,7 @@ class SearchFilterBar extends StatelessWidget {
         children: [
           const Icon(
             Icons.search,
-            color: Color(0xFF9E9E9E),
+            color: goldPrimaryColor,
             size: 24,
           ),
           const SizedBox(width: 12),
@@ -46,8 +48,8 @@ class SearchFilterBar extends StatelessWidget {
               onChanged: onSearchChanged,
               decoration: InputDecoration(
                 hintText: hintText,
-                hintStyle: TextStyle(
-                  color: Colors.grey.shade400,
+                hintStyle: const TextStyle(
+                  color: grey400Color,
                   fontSize: 16,
                 ),
                 border: InputBorder.none,
@@ -56,7 +58,7 @@ class SearchFilterBar extends StatelessWidget {
               ),
               style: const TextStyle(
                 fontSize: 16,
-                color: Color(0xFF333333),
+                color: darkTextColor,
               ),
             ),
           ),
@@ -64,16 +66,16 @@ class SearchFilterBar extends StatelessWidget {
             const SizedBox(width: 8),
             InkWell(
               onTap: onFilterPressed,
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(12),
               child: Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: Colors.grey.withOpacity(0.05),
-                  borderRadius: BorderRadius.circular(8),
+                  color: deepGreenTintColor,
+                  borderRadius: BorderRadius.circular(12),
                 ),
-                child: Icon(
+                child: const Icon(
                   Icons.tune,
-                  color: Colors.grey.shade600,
+                  color: goldPrimaryColor,
                   size: 20,
                 ),
               ),
