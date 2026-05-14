@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:typed_data';
-
 import 'package:echosphere/Api/ResponseModel/service_response_model.dart';
 import 'package:echosphere/Api/ResponseModel/sub_service_response_model.dart';
 import 'package:echosphere/View/Constant/app_color.dart';
@@ -9,6 +8,7 @@ import 'package:echosphere/View/Controller/service_controller.dart';
 import 'package:echosphere/View/Controller/sub_service_controller.dart';
 import 'package:echosphere/View/Utils/app_layout.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -161,8 +161,12 @@ class _CreateServiceRequestScreenState
                 controller: _phoneController,
                 labelText: 'Phone',
                 icon: Icons.phone_outlined,
-                keyboardType: TextInputType.phone,
+                keyboardType: TextInputType.number,
                 textInputAction: TextInputAction.next,
+                inputFormatters: [
+                  LengthLimitingTextInputFormatter(10),
+                  FilteringTextInputFormatter.digitsOnly,
+                ],
               ),
               const SizedBox(height: 14),
               _RequestTextField(
@@ -593,6 +597,7 @@ class _RequestTextField extends StatelessWidget {
   final IconData icon;
   final TextInputType? keyboardType;
   final TextInputAction? textInputAction;
+  final List<TextInputFormatter>? inputFormatters;
   final int maxLines;
 
   const _RequestTextField({
@@ -601,6 +606,7 @@ class _RequestTextField extends StatelessWidget {
     required this.icon,
     this.keyboardType,
     this.textInputAction,
+    this.inputFormatters,
     this.maxLines = 1,
   });
 
@@ -610,6 +616,7 @@ class _RequestTextField extends StatelessWidget {
       controller: controller,
       keyboardType: keyboardType,
       textInputAction: textInputAction,
+      inputFormatters: inputFormatters,
       maxLines: maxLines,
       style: const TextStyle(color: premiumTextColor),
       cursorColor: goldPrimaryColor,
