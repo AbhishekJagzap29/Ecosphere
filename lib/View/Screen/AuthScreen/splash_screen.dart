@@ -89,7 +89,7 @@ class _SplashScreenState extends State<SplashScreen> {
               ),
               const SizedBox(height: 10),
               const Text(
-                'Global Services, Connected Future',
+                'Apno ke Liye...',
                 style: TextStyle(
                   fontSize: 14,
                   fontStyle: FontStyle.italic,

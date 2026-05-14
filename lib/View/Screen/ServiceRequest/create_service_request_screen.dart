@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:typed_data';
 import 'package:echosphere/Api/ResponseModel/service_response_model.dart';
 import 'package:echosphere/Api/ResponseModel/sub_service_response_model.dart';
 import 'package:echosphere/View/Constant/app_color.dart';
@@ -40,6 +39,10 @@ class _CreateServiceRequestScreenState
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _discountController = TextEditingController();
+  final TextEditingController _youtubeLinkController = TextEditingController();
+  final TextEditingController _facebookLinkController = TextEditingController();
+  final TextEditingController _instagramLinkController =
+      TextEditingController();
   final FocusNode _serviceFocusNode = FocusNode();
   final FocusNode _subserviceFocusNode = FocusNode();
 
@@ -72,6 +75,9 @@ class _CreateServiceRequestScreenState
     _addressController.dispose();
     _phoneController.dispose();
     _discountController.dispose();
+    _youtubeLinkController.dispose();
+    _facebookLinkController.dispose();
+    _instagramLinkController.dispose();
     _serviceFocusNode.dispose();
     _subserviceFocusNode.dispose();
     super.dispose();
@@ -177,6 +183,30 @@ class _CreateServiceRequestScreenState
                 textInputAction: TextInputAction.next,
               ),
               const SizedBox(height: 14),
+              _RequestTextField(
+                controller: _youtubeLinkController,
+                labelText: 'YouTube Link',
+                icon: Icons.play_circle_outline,
+                keyboardType: TextInputType.url,
+                textInputAction: TextInputAction.next,
+              ),
+              const SizedBox(height: 14),
+              _RequestTextField(
+                controller: _facebookLinkController,
+                labelText: 'Facebook Link',
+                icon: Icons.facebook,
+                keyboardType: TextInputType.url,
+                textInputAction: TextInputAction.next,
+              ),
+              const SizedBox(height: 14),
+              _RequestTextField(
+                controller: _instagramLinkController,
+                labelText: 'Instagram Link',
+                icon: Icons.camera_alt_outlined,
+                keyboardType: TextInputType.url,
+                textInputAction: TextInputAction.next,
+              ),
+              const SizedBox(height: 14),
               _ImagePickerField(
                 imageBytes: _selectedImageBytes,
                 imageName: _selectedImageName,
@@ -264,6 +294,9 @@ class _CreateServiceRequestScreenState
       address: address,
       phone: phone,
       discount: _discountController.text,
+      youtubeLink: _youtubeLinkController.text,
+      facebookLink: _facebookLinkController.text,
+      instagramLink: _instagramLinkController.text,
       image: _selectedImageBase64,
     );
 

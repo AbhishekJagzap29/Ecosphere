@@ -148,6 +148,7 @@ class _ServiceDetailCard extends StatelessWidget {
                 icon: Icons.local_offer_outlined,
                 text: '${discount.toInt()}% Discount',
               ),
+            _SocialLinksRow(detail: detail),
           ],
         ),
       ),
@@ -222,6 +223,134 @@ class _DetailRow extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _SocialLinksRow extends StatelessWidget {
+  final ServiceDetailData detail;
+
+  const _SocialLinksRow({
+    required this.detail,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final links = <_SocialLink>[
+      if (detail.youtubeLink != null)
+        _SocialLink(
+          label: 'YouTube',
+          icon: Icons.play_circle_outline,
+          url: detail.youtubeLink!,
+        ),
+      if (detail.facebookLink != null)
+        _SocialLink(
+          label: 'Facebook',
+          icon: Icons.facebook,
+          url: detail.facebookLink!,
+        ),
+      if (detail.instagramLink != null)
+        _SocialLink(
+          label: 'Instagram',
+          icon: Icons.camera_alt_outlined,
+          url: detail.instagramLink!,
+        ),
+    ];
+
+    if (links.isEmpty) return const SizedBox.shrink();
+
+    return Padding(
+      padding: const EdgeInsets.only(top: 4),
+      child: Wrap(
+        spacing: 10,
+        runSpacing: 10,
+        children: links
+            .map(
+              (link) => _SocialLinkButton(link: link),
+            )
+            .toList(),
+      ),
+    );
+  }
+}
+
+class _SocialLink {
+  final String label;
+  final IconData icon;
+  final String url;
+
+  const _SocialLink({
+    required this.label,
+    required this.icon,
+    required this.url,
+  });
+}
+
+class _SocialLinkButton extends StatelessWidget {
+  final _SocialLink link;
+
+  const _SocialLinkButton({
+    required this.link,
+  });
+
+  Future<void> _openLink() async {
+    final uri = _parseUrl(link.url);
+    if (uri == null) return;
+
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(
+        uri,
+        mode: LaunchMode.externalApplication,
+      );
+    }
+  }
+
+  Uri? _parseUrl(String value) {
+    final trimmedUrl = value.trim();
+    if (trimmedUrl.isEmpty) return null;
+
+    final normalizedUrl = trimmedUrl.startsWith(RegExp(r'https?://'))
+        ? trimmedUrl
+        : 'https://$trimmedUrl';
+
+    return Uri.tryParse(normalizedUrl);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: _openLink,
+      borderRadius: BorderRadius.circular(24),
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 12,
+          vertical: 8,
+        ),
+        decoration: BoxDecoration(
+          color: primaryGreenOverlay12Color,
+          borderRadius: BorderRadius.circular(24),
+          border: Border.all(color: premiumGoldBorderColor),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              link.icon,
+              size: 17,
+              color: primaryGreenColor,
+            ),
+            const SizedBox(width: 6),
+            Text(
+              link.label,
+              style: const TextStyle(
+                color: premiumTextColor,
+                fontSize: 12.5,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

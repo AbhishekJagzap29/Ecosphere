@@ -300,9 +300,9 @@ class _PremiumLogo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 90,
-      width: 90,
-      padding: const EdgeInsets.all(7),
+      height: 115,
+      width: 115,
+      padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(26),
         gradient: const LinearGradient(
@@ -328,7 +328,7 @@ class _PremiumLogo extends StatelessWidget {
         ],
       ),
       child: Container(
-        padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
           color: luxuryBlackColor,
           borderRadius: BorderRadius.circular(20),
@@ -341,7 +341,7 @@ class _PremiumLogo extends StatelessWidget {
             return const Icon(
               Icons.eco_rounded,
               color: goldPrimaryColor,
-              size: 42,
+              size: 55,
             );
           },
         ),

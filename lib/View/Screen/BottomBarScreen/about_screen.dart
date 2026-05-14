@@ -1,7 +1,6 @@
 import 'package:echosphere/View/Constant/app_color.dart';
 import 'package:echosphere/View/Screen/About/Events.dart';
 import 'package:echosphere/View/Screen/About/Executive.dart';
-import 'package:echosphere/View/Screen/About/Scheme.dart';
 import 'package:echosphere/View/Screen/About/Updates.dart';
 import 'package:echosphere/View/Screen/About/about_company.dart';
 import 'package:flutter/material.dart';
@@ -55,17 +54,6 @@ class AboutScreen extends StatelessWidget {
                 const ExcecutiveScreen(),
               ),
             ),
-              _buildTile(
-              // icon: Icons.calendar_month_outlined,
-              icon: Icons.workspace_premium_rounded,
-              title: 'Schemes',
-              subtitle: 'Explore exclusive company schemes and offers',
-              onTap: () => _openScreen(
-                context,
-                const SchemeScreen(),
-              ),
-            ),
-            
             const SizedBox(height: 10),
             const Center(
               child: Text(

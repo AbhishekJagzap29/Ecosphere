@@ -48,6 +48,9 @@ class ServiceDetailData {
   int? subserviceId;
   String? subserviceName;
   String? image;
+  String? youtubeLink;
+  String? facebookLink;
+  String? instagramLink;
 
   ServiceDetailData({
     this.id,
@@ -58,6 +61,9 @@ class ServiceDetailData {
     this.subserviceId,
     this.subserviceName,
     this.image,
+    this.youtubeLink,
+    this.facebookLink,
+    this.instagramLink,
   });
 
   factory ServiceDetailData.fromJson(Map<String, dynamic> json) {
@@ -70,6 +76,9 @@ class ServiceDetailData {
       subserviceId: _readInt(json['subservice_id']),
       subserviceName: _readString(json['subservice_name']),
       image: _readString(json['image']),
+      youtubeLink: _readString(json['youtube_link']),
+      facebookLink: _readString(json['facebook_link']),
+      instagramLink: _readString(json['instagram_link']),
     );
   }
 
@@ -83,6 +92,9 @@ class ServiceDetailData {
       'subservice_id': subserviceId,
       'subservice_name': subserviceName,
       'image': image,
+      'youtube_link': youtubeLink,
+      'facebook_link': facebookLink,
+      'instagram_link': instagramLink,
     };
   }
 

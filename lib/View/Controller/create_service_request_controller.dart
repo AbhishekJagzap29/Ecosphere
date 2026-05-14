@@ -16,6 +16,9 @@ class CreateServiceRequestController extends GetxController {
     required String address,
     required String phone,
     String? discount,
+    String? youtubeLink,
+    String? facebookLink,
+    String? instagramLink,
     String? image,
   }) async {
     try {
@@ -29,6 +32,9 @@ class CreateServiceRequestController extends GetxController {
         'address': address.trim(),
         'phone': phone.trim(),
         if (_hasText(discount)) 'discount': discount!.trim(),
+        if (_hasText(youtubeLink)) 'youtube_link': youtubeLink!.trim(),
+        if (_hasText(facebookLink)) 'facebook_link': facebookLink!.trim(),
+        if (_hasText(instagramLink)) 'instagram_link': instagramLink!.trim(),
         if (_hasText(image)) 'image': image!.trim(),
         if (_executiveUserId != null) 'user_id': _executiveUserId,
         if (_executiveUserId != null) 'executive_user_id': _executiveUserId,
