@@ -12,7 +12,7 @@ class ProfileScreen extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(20, 24, 20, 120),
+            padding: const EdgeInsets.fromLTRB(20, 24, 20, 24),
             child: SingleChildScrollView(
               physics: const BouncingScrollPhysics(),
               child: Column(
@@ -682,7 +682,7 @@ class _SchemeContentCard extends StatelessWidget {
                 ),
                 SizedBox(height: 12),
                 Text(
-                  'The company provides a Rs.1 lakh accidental insurance policy free for card holders for 1 year.',
+                  'The company provides a Rs.5 lakh accidental insurance policy free for card holders for 1 year.',
                   style: TextStyle(
                     color: premiumMutedTextColor,
                     fontSize: 14,
