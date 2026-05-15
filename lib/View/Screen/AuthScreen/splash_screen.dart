@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:echosphere/View/Constant/app_color.dart';
 import 'package:echosphere/View/Constant/shared_prefs.dart';
 import 'package:echosphere/View/Screen/AuthScreen/user_registration_screen.dart';
@@ -16,21 +15,35 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    Timer(const Duration(seconds: 3), () {
-      if (!mounted) return;
+    _openNextScreen();
+  }
 
-      final isUserRegistered = preferences.getBool(
-        SharedPreference.isUserRegistered,
-      );
+  Future<void> _openNextScreen() async {
+    final minimumSplashTime = Future.delayed(const Duration(seconds: 3));
 
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (context) => isUserRegistered == true
-              ? const HomeScreen()
-              : const UserRegistrationScreen(),
-        ),
-      );
-    });
+    try {
+      await preferences.init().timeout(const Duration(seconds: 5));
+    } catch (_) {
+      // Continue with default registration flow if preferences are unavailable.
+    }
+
+    await minimumSplashTime;
+
+    if (!mounted) return;
+
+    final isUserRegistered = preferences.getBool(
+          SharedPreference.isUserRegistered,
+        ) ??
+        false;
+
+    if (!context.mounted) return;
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (context) => isUserRegistered == true
+            ? const HomeScreen()
+            : const UserRegistrationScreen(),
+      ),
+    );
   }
 
   @override

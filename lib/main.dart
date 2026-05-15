@@ -1,6 +1,5 @@
 import 'package:echosphere/View/Constant/app_color.dart';
 import 'package:flutter/material.dart';
-import 'package:echosphere/View/Constant/shared_prefs.dart';
 import 'package:echosphere/View/Screen/AuthScreen/splash_screen.dart';
 import 'package:echosphere/View/Utils/app_routes.dart';
 import 'package:get/get.dart';
@@ -8,7 +7,6 @@ import 'package:google_fonts/google_fonts.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await preferences.init();
   runApp(const MyApp());
 }
 
@@ -20,6 +18,14 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       title: 'Echosphere',
       debugShowCheckedModeBanner: false,
+      builder: (context, child) {
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(
+            textScaler: const TextScaler.linear(1.0),
+          ),
+          child: child!,
+        );
+      },
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
           seedColor: goldPrimaryColor,
