@@ -42,6 +42,7 @@ class ServiceDetailResponseModel {
 class ServiceDetailData {
   int? id;
   String? name;
+  String? owner_id;
   String? address;
   String? phone;
   String? discount;
@@ -55,6 +56,7 @@ class ServiceDetailData {
   ServiceDetailData({
     this.id,
     this.name,
+    this.owner_id,
     this.address,
     this.phone,
     this.discount,
@@ -70,6 +72,7 @@ class ServiceDetailData {
     return ServiceDetailData(
       id: _readInt(json['id']),
       name: _readString(json['name']),
+      owner_id: _readString(json['owner_id']),
       address: _readString(json['address']),
       phone: _readString(json['phone']),
       discount: _readString(json['discount']),
@@ -86,6 +89,7 @@ class ServiceDetailData {
     return {
       'id': id,
       'name': name,
+      'owner_id': owner_id,
       'address': address,
       'phone': phone,
       'discount': discount,

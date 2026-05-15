@@ -134,6 +134,11 @@ class _ServiceDetailCard extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 10),
+            if (detail.owner_id != null)
+              _DetailRow(
+                icon: Icons.badge_outlined,
+                text: 'Owner : ${detail.owner_id!}',
+              ),
             if (detail.address != null)
               _DetailRow(
                 icon: Icons.location_on_outlined,
