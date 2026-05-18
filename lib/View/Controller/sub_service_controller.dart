@@ -11,6 +11,7 @@ class SubServiceController extends GetxController {
 
   Future<void> getSubServices({
     int? serviceId,
+    int? talukaId,
   }) async {
     final requestSerial = ++_requestSerial;
 
@@ -23,6 +24,7 @@ class SubServiceController extends GetxController {
 
       final response = await SubServiceRepo().subServiceListRepo(
         serviceId: serviceId,
+        talukaId: talukaId,
       );
       
       if (!isCurrentRequest()) return;

@@ -48,6 +48,8 @@ class ServiceDetailData {
   String? discount;
   int? subserviceId;
   String? subserviceName;
+  int? talukaId;
+  String? talukaName;
   String? image;
   String? youtubeLink;
   String? facebookLink;
@@ -62,6 +64,8 @@ class ServiceDetailData {
     this.discount,
     this.subserviceId,
     this.subserviceName,
+    this.talukaId,
+    this.talukaName,
     this.image,
     this.youtubeLink,
     this.facebookLink,
@@ -78,6 +82,8 @@ class ServiceDetailData {
       discount: _readString(json['discount']),
       subserviceId: _readInt(json['subservice_id']),
       subserviceName: _readString(json['subservice_name']),
+      talukaId: _readInt(json['taluka_id']),
+      talukaName: _readString(json['taluka_name']),
       image: _readString(json['image']),
       youtubeLink: _readString(json['youtube_link']),
       facebookLink: _readString(json['facebook_link']),
@@ -95,6 +101,8 @@ class ServiceDetailData {
       'discount': discount,
       'subservice_id': subserviceId,
       'subservice_name': subserviceName,
+      'taluka_id': talukaId,
+      'taluka_name': talukaName,
       'image': image,
       'youtube_link': youtubeLink,
       'facebook_link': facebookLink,

@@ -1,10 +1,11 @@
+import 'package:echosphere/Api/ResponseModel/taluka_response_model.dart';
 import 'package:echosphere/Api/ResponseModel/service_response_model.dart';
 import 'package:echosphere/View/Constant/app_string.dart';
 import 'package:echosphere/View/Controller/service_controller.dart';
-// import 'package:echosphere/View/Screen/BottomBarScreen/sub_service_screen.dart';
+import 'package:echosphere/View/Controller/taluka_controller.dart';
 import 'package:echosphere/View/Screen/Subcategory/sub_cat_screen.dart';
 import 'package:echosphere/View/Constant/app_color.dart';
-import 'package:echosphere/View/Widgets/search_filter.dart';
+import 'package:echosphere/View/Widgets/taluka_filter_dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -20,36 +21,35 @@ class _ServiceScreenState extends State<ServiceScreen> {
       Get.isRegistered<ServiceController>()
           ? Get.find<ServiceController>()
           : Get.put(ServiceController());
-  final TextEditingController _searchController = TextEditingController();
-  String _searchQuery = '';
+  late final TalukaController talukaController;
+  int? _selectedTalukaId;
+  String? _selectedTalukaName;
 
   @override
   void initState() {
     super.initState();
+    talukaController = Get.isRegistered<TalukaController>()
+        ? Get.find<TalukaController>()
+        : Get.put(TalukaController());
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (talukaController.talukas.isEmpty) {
+        talukaController.getTalukas();
+      }
       serviceController.getServices();
     });
   }
 
-  @override
-  void dispose() {
-    _searchController.dispose();
-    super.dispose();
+  Future<void> _refreshServices() => serviceController.getServices(
+        talukaId: _selectedTalukaId,
+      );
+
+  void _onTalukaChanged(TalukaData? taluka) {
+    setState(() {
+      _selectedTalukaId = taluka?.id;
+      _selectedTalukaName = taluka?.name;
+    });
+    serviceController.getServices(talukaId: taluka?.id);
   }
-
-  List<ServiceData> _filteredServices(List<ServiceData> services) {
-    final query = _searchQuery.trim().toLowerCase();
-    if (query.isEmpty) return services;
-
-    return services.where((service) {
-      final name = service.name?.toLowerCase() ?? '';
-      final description = service.description?.toLowerCase() ?? '';
-
-      return name.contains(query) || description.contains(query);
-    }).toList();
-  }
-
-  Future<void> _refreshServices() => serviceController.getServices();
 
   @override
   Widget build(BuildContext context) {
@@ -58,12 +58,10 @@ class _ServiceScreenState extends State<ServiceScreen> {
         padding: const EdgeInsets.fromLTRB(16, 18, 16, 0),
         child: Column(
           children: [
-            SearchFilterBar(
-              controller: _searchController,
-              hintText: AppString.searchServices,
-              onSearchChanged: (value) {
-                setState(() => _searchQuery = value);
-              },
+            TalukaFilterDropdown(
+              selectedTalukaId: _selectedTalukaId,
+              onChanged: _onTalukaChanged,
+              onRetry: talukaController.getTalukas,
             ),
             const SizedBox(height: 20),
             Expanded(
@@ -77,7 +75,7 @@ class _ServiceScreenState extends State<ServiceScreen> {
                     );
                   }
 
-                  final services = _filteredServices(controller.services);
+                  final services = controller.services;
 
                   if (services.isEmpty) {
                     return RefreshIndicator(
@@ -103,81 +101,12 @@ class _ServiceScreenState extends State<ServiceScreen> {
                       itemBuilder: (context, index) {
                         final service = services[index];
                         final serviceName = service.name ?? 'Unnamed service';
-                        final serviceInitial = serviceName.trim().isNotEmpty
-                            ? serviceName.trim()[0].toUpperCase()
-                            : '?';
 
-                        return Material(
-                          color: premiumSurfaceColor,
-                          borderRadius: BorderRadius.circular(18),
-                          elevation: 0,
-                          shadowColor: transparentColor,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: premiumSurfaceColor,
-                              borderRadius: BorderRadius.circular(18),
-                              border: Border.all(color: premiumGoldBorderColor),
-                              boxShadow: const [
-                                BoxShadow(
-                                  color: premiumShadowColor,
-                                  blurRadius: 18,
-                                  offset: Offset(0, 8),
-                                ),
-                              ],
-                            ),
-                            child: ListTile(
-                              contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                                vertical: 10,
-                              ),
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => SubServiceScreen(
-                                      serviceId: service.id,
-                                      serviceName: serviceName,
-                                    ),
-                                  ),
-                                );
-                              },
-                              leading: CircleAvatar(
-                                backgroundColor:
-                                    primaryGreenColor.withOpacity(0.12),
-                                child: Text(
-                                  serviceInitial,
-                                  style: const TextStyle(
-                                    color: primaryGreenColor,
-                                    fontWeight: FontWeight.w700,
-                                  ),
-                                ),
-                              ),
-                              title: Text(
-                                serviceName,
-                                style: const TextStyle(
-                                  color: premiumTextColor,
-                                  fontWeight: FontWeight.w800,
-                                ),
-                              ),
-                              subtitle: service.description == null ||
-                                      service.description!.trim().isEmpty
-                                  ? null
-                                  : Padding(
-                                      padding: const EdgeInsets.only(top: 6),
-                                      child: Text(
-                                        service.description!,
-                                        style: const TextStyle(
-                                          color: premiumMutedTextColor,
-                                          height: 1.3,
-                                        ),
-                                      ),
-                                    ),
-                              trailing: const Icon(
-                                Icons.chevron_right,
-                                color: premiumMutedTextColor,
-                              ),
-                            ),
-                          ),
+                        return _ServiceTile(
+                          service: service,
+                          serviceName: serviceName,
+                          talukaId: _selectedTalukaId,
+                          talukaName: _selectedTalukaName,
                         );
                       },
                     ),
@@ -186,6 +115,101 @@ class _ServiceScreenState extends State<ServiceScreen> {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ServiceTile extends StatelessWidget {
+  final ServiceData service;
+  final String serviceName;
+  final int? talukaId;
+  final String? talukaName;
+
+  const _ServiceTile({
+    required this.service,
+    required this.serviceName,
+    required this.talukaId,
+    required this.talukaName,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final serviceInitial = serviceName.trim().isNotEmpty
+        ? serviceName.trim()[0].toUpperCase()
+        : '?';
+
+    return Material(
+      color: premiumSurfaceColor,
+      borderRadius: BorderRadius.circular(18),
+      elevation: 0,
+      shadowColor: transparentColor,
+      child: Container(
+        decoration: BoxDecoration(
+          color: premiumSurfaceColor,
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(color: premiumGoldBorderColor),
+          boxShadow: const [
+            BoxShadow(
+              color: premiumShadowColor,
+              blurRadius: 18,
+              offset: Offset(0, 8),
+            ),
+          ],
+        ),
+        child: ListTile(
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 10,
+          ),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => SubServiceScreen(
+                  serviceId: service.id,
+                  serviceName: serviceName,
+                  talukaId: talukaId,
+                  talukaName: talukaName,
+                ),
+              ),
+            );
+          },
+          leading: CircleAvatar(
+            backgroundColor: primaryGreenColor.withOpacity(0.12),
+            child: Text(
+              serviceInitial,
+              style: const TextStyle(
+                color: primaryGreenColor,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
+          title: Text(
+            serviceName,
+            style: const TextStyle(
+              color: premiumTextColor,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+          subtitle: service.description == null ||
+                  service.description!.trim().isEmpty
+              ? null
+              : Padding(
+                  padding: const EdgeInsets.only(top: 6),
+                  child: Text(
+                    service.description!,
+                    style: const TextStyle(
+                      color: premiumMutedTextColor,
+                      height: 1.3,
+                    ),
+                  ),
+                ),
+          trailing: const Icon(
+            Icons.chevron_right,
+            color: premiumMutedTextColor,
+          ),
         ),
       ),
     );

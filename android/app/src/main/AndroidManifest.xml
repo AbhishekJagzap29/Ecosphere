@@ -38,10 +38,30 @@
     </application>
 
     <queries>
-        <intent>
-            <action android:name="android.intent.action.PROCESS_TEXT"/>
-            <data android:mimeType="text/plain"/>
-        </intent>
-    </queries>
+
+    <!-- Text Processing -->
+    <intent>
+        <action android:name="android.intent.action.PROCESS_TEXT"/>
+        <data android:mimeType="text/plain"/>
+    </intent>
+
+    <!-- Open Browser Links -->
+    <intent>
+        <action android:name="android.intent.action.VIEW"/>
+        <data android:scheme="https"/>
+    </intent>
+
+    <intent>
+        <action android:name="android.intent.action.VIEW"/>
+        <data android:scheme="http"/>
+    </intent>
+
+    <!-- Phone Calls -->
+    <intent>
+        <action android:name="android.intent.action.DIAL"/>
+        <data android:scheme="tel"/>
+    </intent>
+
+</queries>
 
 </manifest>

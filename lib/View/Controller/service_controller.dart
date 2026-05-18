@@ -13,12 +13,16 @@ class ServiceController extends GetxController {
   List<ServiceData> popularServices = [];
   List<ServiceData> exploreServices = [];
 
-  Future<void> getServices() async {
+  Future<void> getServices({
+    int? talukaId,
+  }) async {
     try {
       isLoading = true;
       update();
 
-      final response = await ServiceRepo().serviceListRepo();
+      final response = await ServiceRepo().serviceListRepo(
+        talukaId: talukaId,
+      );
 
       if (response.status?.toLowerCase() == 'success') {
         services = response.data;

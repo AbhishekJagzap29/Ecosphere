@@ -9,462 +9,149 @@ class ProfileScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: premiumScaffoldColor,
       body: PageView(
-        scrollDirection: Axis.horizontal,
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20, 24, 20, 24),
-            child: SingleChildScrollView(
-              physics: const BouncingScrollPhysics(),
-              child: Column(
-                children: [
-                  /// =========================
-                  /// FRONT SIDE CARD
-                  /// =========================
-                  Container(
-                    width: double.infinity,
-                    height: 230,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(24),
-                      border: Border.all(
-                        color: goldPrimaryColor.withOpacity(0.12),
-                        width: 1,
-                      ),
-                      gradient: const LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          Color(0xFF0E0E0E),
-                          Color(0xFF151515),
-                          Color(0xFF1C1407),
-                        ],
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: goldPrimaryColor.withOpacity(0.10),
-                          blurRadius: 24,
-                          offset: const Offset(0, 12),
-                        ),
-                        const BoxShadow(
-                          color: Colors.black54,
-                          blurRadius: 18,
-                          offset: Offset(0, 8),
-                        ),
-                      ],
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(24),
-                      child: Stack(
-                        children: [
-                          /// DESIGN
-                          Positioned(
-                            top: -60,
-                            left: -50,
-                            child: Container(
-                              height: 180,
-                              width: 180,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  color: goldPrimaryColor.withOpacity(0.05),
-                                  width: 2,
-                                ),
-                              ),
-                            ),
-                          ),
+  scrollDirection: Axis.horizontal,
+  children: [
+   Padding(
+  padding: const EdgeInsets.all(20),
+  child: Container(
+    width: double.infinity,
+    decoration: BoxDecoration(
+      color: Colors.black,
+      borderRadius: BorderRadius.circular(28),
+      border: Border.all(
+        color: const Color(0xFFD4A017),
+        width: 2,
+      ),
+    ),
+    child: SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          children: [
 
-                          Positioned(
-                            bottom: -80,
-                            right: -60,
-                            child: Container(
-                              height: 220,
-                              width: 220,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  color: goldPrimaryColor.withOpacity(0.04),
-                                  width: 2,
-                                ),
-                              ),
-                            ),
-                          ),
+            // TOP TITLE
+            Row(
+              children: [
 
-                          Padding(
-                            padding: const EdgeInsets.all(18),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                /// TOP TAG
-                                Center(
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 16,
-                                      vertical: 7,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(40),
-                                      color: goldPrimaryColor.withOpacity(0.10),
-                                    ),
-                                    child: const Text(
-                                      'ADVENTURE PASS',
-                                      style: TextStyle(
-                                        color: goldPrimaryColor,
-                                        fontWeight: FontWeight.w800,
-                                        letterSpacing: 1,
-                                        fontSize: 11,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-
-                                const SizedBox(height: 14),
-
-                                /// TITLE
-                                const Center(
-                                  child: Column(
-                                    children: [
-                                      Text(
-                                        'ECHOSPHERE',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 22,
-                                          fontWeight: FontWeight.w900,
-                                          letterSpacing: 1.2,
-                                        ),
-                                      ),
-                                      SizedBox(height: 4),
-                                      Text(
-                                        'MULTI SERVICES PVT. LTD.',
-                                        style: TextStyle(
-                                          color: Colors.white54,
-                                          fontSize: 10,
-                                          letterSpacing: 1,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-
-                                const Spacer(),
-
-                                /// BOTTOM
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    const Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            'XXXXX XXXX',
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 21,
-                                              fontWeight: FontWeight.w700,
-                                              letterSpacing: 1.4,
-                                            ),
-                                          ),
-                                          SizedBox(height: 16),
-                                          Row(
-                                            children: [
-                                              Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                    'MEMBER ID',
-                                                    style: TextStyle(
-                                                      color: Colors.white54,
-                                                      fontSize: 8,
-                                                      letterSpacing: 1,
-                                                    ),
-                                                  ),
-                                                  SizedBox(height: 4),
-                                                  Text(
-                                                    '#01254',
-                                                    style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      fontSize: 13,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                              SizedBox(width: 28),
-                                              Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                    'VALID THRU',
-                                                    style: TextStyle(
-                                                      color: Colors.white54,
-                                                      fontSize: 8,
-                                                      letterSpacing: 1,
-                                                    ),
-                                                  ),
-                                                  SizedBox(height: 4),
-                                                  Text(
-                                                    '09/24',
-                                                    style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      fontSize: 13,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-
-                                    /// QR
-                                    Container(
-                                      height: 68,
-                                      width: 68,
-                                      padding: const EdgeInsets.all(5),
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(16),
-                                      ),
-                                      child: const Icon(
-                                        Icons.qr_code_2,
-                                        color: Colors.black,
-                                        size: 48,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                Expanded(
+                  child: Container(
+                    height: 2,
+                    color: const Color(0xFFD4A017),
                   ),
+                ),
 
-                  const SizedBox(height: 20),
+                const SizedBox(width: 12),
 
-                  /// =========================
-                  /// BACK SIDE CARD
-                  /// =========================
-                  Container(
-                    width: double.infinity,
-                    height: 290,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(24),
-                      border: Border.all(
-                        color: goldPrimaryColor.withOpacity(0.12),
-                        width: 1,
-                      ),
-                      gradient: const LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          Color(0xFF0E0E0E),
-                          Color(0xFF151515),
-                          Color(0xFF1C1407),
-                        ],
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: goldPrimaryColor.withOpacity(0.10),
-                          blurRadius: 24,
-                          offset: const Offset(0, 12),
-                        ),
-                        const BoxShadow(
-                          color: Colors.black54,
-                          blurRadius: 18,
-                          offset: Offset(0, 8),
-                        ),
-                      ],
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(24),
-                      child: Padding(
-                        padding: const EdgeInsets.all(14),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            /// BLACK STRIP
-                            // Container(
-                            //   height: 28,
-                            //   // width: double.infinity,
-                            //   width: 220,
-
-                            //   decoration: BoxDecoration(
-                            //     borderRadius: BorderRadius.circular(10),
-                            //     color: Colors.white,
-                            //   ),
-                            // ),
-
-                            // const SizedBox(height: 8),
-                            Align(
-                              alignment: Alignment.centerRight,
-                              child: Container(
-                                height: 36,
-                                width: 100,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-
-                            const SizedBox(height: 4),
-
-                            Align(
-                              alignment: Alignment.centerRight,
-                              child: Text(
-                                'CARD HOLDER SIGNATURE',
-                                style: TextStyle(
-                                  color: Colors.white.withOpacity(0.55),
-                                  fontSize: 7,
-                                  letterSpacing: 1,
-                                ),
-                              ),
-                            ),
-
-                            const SizedBox(height: 10),
-
-                            /// COMPANY NAME
-                            const Center(
-                              child: Column(
-                                children: [
-                                  Text(
-                                    'ECHOSPHERE',
-                                    style: TextStyle(
-                                      color: goldPrimaryColor,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w900,
-                                      letterSpacing: 1.1,
-                                    ),
-                                  ),
-                                  SizedBox(height: 2),
-                                  Text(
-                                    'MULTI SERVICES PVT. LTD.',
-                                    style: TextStyle(
-                                      color: Colors.white70,
-                                      fontSize: 8,
-                                      letterSpacing: 1,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-
-                            const SizedBox(height: 10),
-
-                            /// CONTACT INFO
-                            Center(
-                              child: Column(
-                                children: [
-                                  const Text(
-                                    '8208251866 / 9272031602',
-                                    style: TextStyle(
-                                      color: goldPrimaryColor,
-                                      fontSize: 11,
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    'www.echonsk.in',
-                                    style: TextStyle(
-                                      color: Colors.white.withOpacity(0.78),
-                                      fontSize: 9,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-
-                            const SizedBox(height: 12),
-
-                            /// ADDRESS
-                            Container(
-                              width: double.infinity,
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 10,
-                                vertical: 8,
-                              ),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Colors.white.withOpacity(0.03),
-                              ),
-                              child: Text(
-                                'To avail discount info., Kindly Call on 8208251866 / 9272031602 or Mail us at echospherensk2024@gmail.com\nWeb - www.echonsk.in',
-                                textAlign: TextAlign.center,
-                                maxLines: 3,
-                                overflow: TextOverflow.visible,
-                                style: TextStyle(
-                                  color: Colors.white.withOpacity(0.75),
-                                  fontSize: 8,
-                                  height: 1.3,
-                                ),
-                              ),
-                            ),
-
-                            const SizedBox(height: 8),
-
-                            Container(
-                              width: double.infinity,
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 10,
-                                vertical: 8,
-                              ),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Colors.white.withOpacity(0.03),
-                              ),
-                              child: Text(
-                                'Flat No.09, Narayan Deep Housing Society, Anand Nagar, Deolali, Nashik - 422401',
-                                textAlign: TextAlign.center,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                  color: Colors.white.withOpacity(0.75),
-                                  fontSize: 8,
-                                  height: 1.3,
-                                ),
-                              ),
-                            ),
-
-                            const SizedBox(height: 8),
-
-                            /// POWERED BY
-                            Center(
-                              child: Text(
-                                'Powered By Echosphere',
-                                style: TextStyle(
-                                  color: Colors.white.withOpacity(0.55),
-                                  fontSize: 8,
-                                  fontStyle: FontStyle.italic,
-                                  letterSpacing: 0.8,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
+                const Text(
+                  'ADVENTURE PASS',
+                  style: TextStyle(
+                    color: Color(0xFFD4A017),
+                    fontSize: 28,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 1,
                   ),
-                ],
+                ),
+
+                const SizedBox(width: 12),
+
+                Expanded(
+                  child: Container(
+                    height: 2,
+                    color: const Color(0xFFD4A017),
+                  ),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 40),
+
+            // FRONT CARD
+            ClipRRect(
+              borderRadius: BorderRadius.circular(24),
+              child: Image.asset(
+                'assets/images/Front.png',
+                fit: BoxFit.contain,
               ),
             ),
-          ),
-        Padding(
-  padding: const EdgeInsets.fromLTRB(20, 24, 20, 20),
-  child: SingleChildScrollView(
-    physics: const BouncingScrollPhysics(),
-    child: const _SchemeContentCard(),
+
+            const SizedBox(height: 40),
+
+            // BACK CARD
+            ClipRRect(
+              borderRadius: BorderRadius.circular(24),
+              child: Image.asset(
+                'assets/images/Back.png',
+                fit: BoxFit.contain,
+              ),
+            ),
+
+            const SizedBox(height: 30),
+          ],
+        ),
+      ),
+    ),
   ),
 ),
+
+    // Marathi Page
+    const Padding(
+      padding: EdgeInsets.fromLTRB(20, 24, 20, 20),
+      child: SingleChildScrollView(
+        physics: BouncingScrollPhysics(),
+        child: _MarathiSchemeContentCard(),
+      ),
+    ),
+
+    // English Page
+    const Padding(
+      padding: EdgeInsets.fromLTRB(20, 24, 20, 20),
+      child: SingleChildScrollView(
+        physics: BouncingScrollPhysics(),
+        child: _SchemeContentCard(),
+      ),
+    ),
+  ],
+),
+    );
+  }
+}
+
+class _CardImage extends StatelessWidget {
+  final String assetPath;
+  final double height;
+
+  const _CardImage({
+    required this.assetPath,
+    required this.height,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      height: height,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: goldPrimaryColor.withOpacity(0.10),
+            blurRadius: 24,
+            offset: const Offset(0, 12),
+          ),
+          const BoxShadow(
+            color: Colors.black54,
+            blurRadius: 18,
+            offset: Offset(0, 8),
+          ),
         ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(24),
+        child: Image.asset(
+          assetPath,
+          fit: BoxFit.contain,
+        ),
       ),
     );
   }
@@ -494,45 +181,86 @@ class _SchemeContentCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Center(
-            child: Icon(
-              Icons.workspace_premium_rounded,
-              color: goldPrimaryColor,
-              size: 52,
-            ),
+            // child: Icon(
+            //   Icons.workspace_premium_rounded,
+            //   color: goldPrimaryColor,
+            //   size: 52,
+            // ),
           ),
+          // const SizedBox(height: 18),
+          
           const SizedBox(height: 18),
-          const Center(
-            child: Text(
-              'ADVENTURE PASS',
-              style: TextStyle(
-                color: premiumTextColor,
-                fontSize: 24,
-                fontWeight: FontWeight.w900,
-                letterSpacing: 1,
-              ),
-            ),
-          ),
-          const SizedBox(height: 8),
-          Center(
-            child: Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 16,
-                vertical: 8,
-              ),
-              decoration: BoxDecoration(
-                color: goldPrimaryColor.withOpacity(0.12),
-                borderRadius: BorderRadius.circular(30),
-                border: Border.all(color: premiumGoldBorderColor),
-              ),
-              child: const Text(
-                'One Card - Many Benefits',
-                style: TextStyle(
-                  color: goldPrimaryColor,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ),
-          ),
+          // Center(
+          //   child: Container(
+          //     padding: const EdgeInsets.symmetric(
+          //       horizontal: 16,
+          //       vertical: 8,
+          //     ),
+          //     decoration: BoxDecoration(
+          //       color: goldPrimaryColor.withOpacity(0.12),
+          //       borderRadius: BorderRadius.circular(30),
+          //       border: Border.all(color: premiumGoldBorderColor),
+          //     ),
+          //     child: const Text(
+          //       'One Card - Many Benefits',
+          //       style: TextStyle(
+          //         color: goldPrimaryColor,
+          //         fontWeight: FontWeight.w700,
+          //       ),
+          //     ),
+          //   ),
+          // ),
+          // TOP PREMIUM GOLD BANNER
+Container(
+  width: double.infinity,
+  padding: const EdgeInsets.symmetric(
+    vertical: 22,
+    horizontal: 18,
+  ),
+  decoration: BoxDecoration(
+    gradient: const LinearGradient(
+      colors: [
+        Color(0xFFB8860B),
+        Color(0xFFFFD700),
+      ],
+    ),
+    borderRadius: BorderRadius.circular(20),
+  ),
+  child: const Column(
+    children: [
+      Icon(
+        Icons.workspace_premium_rounded,
+        size: 54,
+        color: Colors.black,
+      ),
+
+      SizedBox(height: 12),
+
+      Text(
+        'ADVENTURE PASS',
+        style: TextStyle(
+          color: Colors.black,
+          fontSize: 24,
+          fontWeight: FontWeight.w900,
+          letterSpacing: 1,
+        ),
+      ),
+
+      SizedBox(height: 10),
+
+      Text(
+        'One Card - Many Benefits',
+        style: TextStyle(
+          color: Colors.black87,
+          fontSize: 15,
+          fontWeight: FontWeight.w700,
+        ),
+      ),
+    ],
+  ),
+),
+
+const SizedBox(height: 28),
           const SizedBox(height: 26),
           const Text(
             'We are bringing trends for you!',
@@ -603,7 +331,7 @@ class _SchemeContentCard extends StatelessWidget {
               _BenefitChip('Personal Care'),
               _BenefitChip('Sports & Gym'),
               _BenefitChip('Opticals'),
-              _BenefitChip('Dairy Needs'),
+              _BenefitChip('Daily Needs'),
               _BenefitChip('Water Parks'),
               _BenefitChip('Stationery'),
             ],
@@ -697,6 +425,324 @@ class _SchemeContentCard extends StatelessWidget {
                     fontSize: 13,
                     fontStyle: FontStyle.italic,
                     height: 1.6,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _MarathiSchemeContentCard extends StatelessWidget {
+  const _MarathiSchemeContentCard();
+  
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(22),
+      decoration: BoxDecoration(
+        color: premiumSurfaceColor,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: premiumGoldBorderColor),
+        boxShadow: const [
+          BoxShadow(
+            color: premiumShadowColor,
+            blurRadius: 20,
+            offset: Offset(0, 10),
+          ),
+        ],
+      ),
+      
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        
+        children: [
+          const SizedBox(height: 18),
+          // TOP PREMIUM BANNER
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(
+              vertical: 22,
+              horizontal: 18,
+            ),
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(
+                colors: [
+                  Color(0xFFB8860B),
+                  Color(0xFFFFD700),
+                ],
+              ),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            
+            child: const Column(
+              
+              children: [
+                Icon(
+                  Icons.workspace_premium_rounded,
+                  size: 54,
+                  color: Colors.black,
+                ),
+                SizedBox(height: 12),
+                Text(
+                  'ADVENTURE PASS',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 24,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 1,
+                  ),
+                ),
+                SizedBox(height: 10),
+                Text(
+                  '१ कार्ड अनेक फायदे',
+                  style: TextStyle(
+                    color: Colors.black87,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 28),
+
+          const SizedBox(height: 26),
+
+const Text(
+  'आम्ही घेऊन येत आहोत  तुमच्यासाठी फक्त ₹2500/- मध्ये 5 वर्षांसाठी संपूर्ण कुटुंबासाठी',
+  style: TextStyle(
+    color: goldPrimaryColor,
+    fontSize: 20,
+    fontWeight: FontWeight.bold,
+  ),
+),
+
+
+
+const SizedBox(height: 14),
+
+Container(
+  width: double.infinity,
+  padding: const EdgeInsets.all(18),
+  decoration: BoxDecoration(
+    color: premiumScaffoldColor,
+    borderRadius: BorderRadius.circular(18),
+    border: Border.all(color: premiumGoldBorderColor),
+  ),
+  child: const Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+   
+
+      SizedBox(height: 14),
+
+      Text(
+        '''
+१ कार्ड अनेक फायदे
+
+ADVENTURE PASS डिस्काउंट कार्ड
+''',
+        style: TextStyle(
+          color: premiumTextColor,
+          fontSize: 15,
+          fontWeight: FontWeight.w600,
+          height: 1.8,
+        ),
+      ),
+    ],
+  ),
+),
+
+          const SizedBox(height: 24),
+
+          const Text(
+            '''
+आता मिळवा आपल्या रोजच्या दैनंदिन खरेदी व सेवेत भरघोस सूट..!
+''',
+            style: TextStyle(
+              color: premiumTextColor,
+              fontSize: 16,
+              fontWeight: FontWeight.w700,
+              height: 1.8,
+            ),
+          ),
+
+          const SizedBox(height: 18),
+
+          const Text(
+            '''
+आजच्या महागाईच्या काळात सर्व सामान्य कुटुंबांना जीवन जगत असताना बचतीच्या मार्गाने आर्थिक लाभ व्हावा अशी योजना कंपनी घेऊन आलेली आहे.
+''',
+            style: TextStyle(
+              color: premiumMutedTextColor,
+              fontSize: 15,
+              height: 1.9,
+            ),
+          ),
+
+          const SizedBox(height: 18),
+
+          const Text(
+            '''
+कंपनीने आपल्याला भरघोस फायदा व्हावा या दृष्टीने आपल्या परिसरातील सर्व सुविधायुक्त सेवा केंद्रांशी करार केलेला आहे.
+''',
+            style: TextStyle(
+              color: premiumMutedTextColor,
+              fontSize: 15,
+              height: 1.9,
+            ),
+          ),
+
+          const SizedBox(height: 28),
+
+          const Text(
+            'उपलब्ध सेवा',
+            style: TextStyle(
+              color: premiumTextColor,
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+
+          const SizedBox(height: 18),
+
+          const Wrap(
+            spacing: 10,
+            runSpacing: 10,
+            children: [
+              _BenefitChip('हॉस्पिटल'),
+              _BenefitChip('डायग्नोस्टिक लॅब'),
+              _BenefitChip('पॅथॉलॉजीकल लॅब'),
+              _BenefitChip('फॅमिली रेस्टॉरंट'),
+              _BenefitChip('ॲग्रो टूरिजम'),
+              _BenefitChip('मेडीकल'),
+              _BenefitChip('हॉटेल्स'),
+              _BenefitChip('रिसॉर्ट'),
+              _BenefitChip('सुपर मार्केट'),
+              _BenefitChip('ब्रँडेड कपडे'),
+              _BenefitChip('ज्वेलरी'),
+              _BenefitChip('पर्सनल केअर'),
+              _BenefitChip('स्पोर्ट अँड जिम'),
+              _BenefitChip('शेती'),
+              _BenefitChip('डेली नीडस्'),
+              _BenefitChip('ॲडव्हेंचर पास'),
+              _BenefitChip('इमर्जन्सी सर्व्हिसेस'),
+              _BenefitChip('गिफ्ट शॉप'),
+            ],
+          ),
+
+          const SizedBox(height: 24),
+
+          const Text(
+            '...व इतर अनेक सर्व्हिस प्रोव्हाईडर्स',
+            style: TextStyle(
+              color: premiumMutedTextColor,
+              fontSize: 14,
+              fontStyle: FontStyle.italic,
+            ),
+          ),
+
+          const SizedBox(height: 30),
+
+          // DISCOUNT CARD
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(18),
+            decoration: BoxDecoration(
+              color: goldPrimaryColor.withOpacity(0.08),
+              borderRadius: BorderRadius.circular(18),
+              border: Border.all(color: premiumGoldBorderColor),
+            ),
+            child: const Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'डिस्काउंट फायदे',
+                  style: TextStyle(
+                    color: premiumTextColor,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 12),
+                Text(
+                  '''
+सेवा पुरविणाऱ्या सर्व्हिस सेंटर बरोबर करार करून आपणास 2% ते 30% पर्यंत डिस्काउंट मिळवून देण्यासाठी प्रयत्न केलेला आहे.
+''',
+                  style: TextStyle(
+                    color: premiumMutedTextColor,
+                    fontSize: 14,
+                    height: 1.8,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 30),
+
+          const Text(
+            'INSURANCE विमा',
+            style: TextStyle(
+              color: premiumTextColor,
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+
+          const SizedBox(height: 14),
+
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(18),
+            decoration: BoxDecoration(
+              color: premiumScaffoldColor,
+              borderRadius: BorderRadius.circular(18),
+              border: Border.all(color: premiumGoldBorderColor),
+            ),
+            child: const Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '₹5 लाख अपघाती विमा',
+                  style: TextStyle(
+                    color: goldPrimaryColor,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+
+                SizedBox(height: 14),
+
+                Text(
+                  '''
+आम्ही आमच्या कार्ड धारकासाठी कंपनीकडून ₹5 लाख रुपयांची 1 वर्ष मुदतीची विमा पॉलिसी मोफत देत आहोत.
+''',
+                  style: TextStyle(
+                    color: premiumMutedTextColor,
+                    fontSize: 14,
+                    height: 1.8,
+                  ),
+                ),
+
+                SizedBox(height: 12),
+
+                Text(
+                  '''
+सदर पॉलिसी ही जनरल इन्शुरन्स पॉलिसी असेल.
+(आपघाती संरक्षण)
+''',
+                  style: TextStyle(
+                    color: premiumMutedTextColor,
+                    fontSize: 13,
+                    fontStyle: FontStyle.italic,
+                    height: 1.8,
                   ),
                 ),
               ],

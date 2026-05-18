@@ -17,9 +17,17 @@ class ServiceRepo {
   }
 
   /// SERVICE LIST REPO
-  Future<ServiceResponseModel> serviceListRepo() async {
+  Future<ServiceResponseModel> serviceListRepo({
+    int? talukaId,
+  }) async {
+    final url = Uri.parse(ApiRouts.servicesAPI).replace(
+      queryParameters: {
+        if (talukaId != null) 'taluka_id': talukaId.toString(),
+      },
+    ).toString();
+
     final response = await APIService().getResponse(
-      url: ApiRouts.servicesAPI,
+      url: url,
       apiType: APIType.aGet,
       header: header,
     );

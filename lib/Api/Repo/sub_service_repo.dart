@@ -19,10 +19,12 @@ class SubServiceRepo {
   /// SUB SERVICE LIST REPO
   Future<SubServiceResponseModel> subServiceListRepo({
     int? serviceId,
+    int? talukaId,
   }) async {
     final url = Uri.parse(ApiRouts.subServicesAPI).replace(
       queryParameters: {
         if (serviceId != null) 'service_id': serviceId.toString(),
+        if (talukaId != null) 'taluka_id': talukaId.toString(),
       },
     ).toString();
 

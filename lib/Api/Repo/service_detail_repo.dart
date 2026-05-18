@@ -19,10 +19,12 @@ class ServiceDetailRepo {
   /// SERVICE DETAIL LIST REPO
   Future<ServiceDetailResponseModel> serviceDetailListRepo({
     int? subserviceId,
+    int? talukaId,
   }) async {
     final url = Uri.parse(ApiRouts.serviceDetailsAPI).replace(
       queryParameters: {
         if (subserviceId != null) 'subservice_id': subserviceId.toString(),
+        if (talukaId != null) 'taluka_id': talukaId.toString(),
       },
     ).toString();
 

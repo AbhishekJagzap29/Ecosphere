@@ -3,6 +3,7 @@ import 'package:echosphere/View/Screen/About/Events.dart';
 import 'package:echosphere/View/Screen/About/Executive.dart';
 import 'package:echosphere/View/Screen/About/Updates.dart';
 import 'package:echosphere/View/Screen/About/about_company.dart';
+import 'package:echosphere/View/Screen/About/contact_us.dart';
 import 'package:flutter/material.dart';
 
 class AboutScreen extends StatelessWidget {
@@ -45,6 +46,7 @@ class AboutScreen extends StatelessWidget {
                 const UpdatesScreen(),
               ),
             ),
+           
             _buildTile(
               icon: Icons.person_add_alt_1,
               title: 'Executive',
@@ -54,6 +56,17 @@ class AboutScreen extends StatelessWidget {
                 const ExcecutiveScreen(),
               ),
             ),
+
+             _buildTile(
+              icon: Icons.contact_phone_outlined,
+              title: 'Contact Us',
+              subtitle: 'Call, email, WhatsApp, or find our office location',
+              onTap: () => _openScreen(
+                context,
+                const ContactUsScreen(),
+              ),
+            ),
+
             const SizedBox(height: 10),
             const Center(
               child: Text(
@@ -65,7 +78,6 @@ class AboutScreen extends StatelessWidget {
                 ),
               ),
             ),
-            
           ],
         ),
       ),

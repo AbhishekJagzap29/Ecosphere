@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:echosphere/Api/Repo/create_service_request_repo.dart';
 import 'package:echosphere/Api/ResponseModel/create_service_request_response_model.dart';
 import 'package:echosphere/View/Constant/shared_prefs.dart';
@@ -13,6 +12,7 @@ class CreateServiceRequestController extends GetxController {
     required String service,
     required String subservice,
     required String name,
+    required String ownerId,
     required String address,
     required String phone,
     String? discount,
@@ -29,6 +29,7 @@ class CreateServiceRequestController extends GetxController {
         'service': service.trim(),
         'subservice': subservice.trim(),
         'name': name.trim(),
+        'owner_id': ownerId.trim(),
         'address': address.trim(),
         'phone': phone.trim(),
         if (_hasText(discount)) 'discount': discount!.trim(),

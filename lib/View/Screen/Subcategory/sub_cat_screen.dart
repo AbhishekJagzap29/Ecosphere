@@ -1,20 +1,26 @@
 import 'package:echosphere/Api/ResponseModel/sub_service_response_model.dart';
+import 'package:echosphere/Api/ResponseModel/taluka_response_model.dart';
 import 'package:echosphere/View/Constant/app_string.dart';
 import 'package:echosphere/View/Controller/sub_service_controller.dart';
+import 'package:echosphere/View/Controller/taluka_controller.dart';
 import 'package:echosphere/View/Screen/Subcategory/SubCategoryDetails/sub_cat_det_screen.dart';
 import 'package:echosphere/View/Constant/app_color.dart';
-import 'package:echosphere/View/Widgets/search_filter.dart';
+import 'package:echosphere/View/Widgets/taluka_filter_dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class SubServiceScreen extends StatefulWidget {
   final int? serviceId;
   final String? serviceName;
+  final int? talukaId;
+  final String? talukaName;
 
   const SubServiceScreen({
     super.key,
     this.serviceId,
     this.serviceName,
+    this.talukaId,
+    this.talukaName,
   });
 
   @override
@@ -23,13 +29,9 @@ class SubServiceScreen extends StatefulWidget {
 
 class _SubServiceScreenState extends State<SubServiceScreen> {
   late final SubServiceController subServiceController;
-  final TextEditingController _searchController = TextEditingController();
-  final RxString _searchInput = ''.obs;
-  final RxString _searchQuery = ''.obs;
-  late final Worker _searchDebounce;
-  List<SubServiceData>? _lastSource;
-  String _lastQuery = '';
-  List<SubServiceData> _cachedSubServices = [];
+  late final TalukaController talukaController;
+  int? _selectedTalukaId;
+  String? _selectedTalukaName;
   List<SubServiceData> _lastLoadedSubServices = [];
 
   @override
@@ -42,58 +44,41 @@ class _SubServiceScreenState extends State<SubServiceScreen> {
       );
     }
     subServiceController = Get.find<SubServiceController>();
-    _searchDebounce = debounce<String>(
-      _searchInput,
-      (value) => _searchQuery.value = value,
-      time: const Duration(milliseconds: 300),
-    );
-    // WidgetsBinding.instance.addPostFrameCallback((_) {
-    //   subServiceController.getSubServices(
-    //     serviceId: widget.serviceId,
-    //   );
-    // });
+    talukaController = Get.isRegistered<TalukaController>()
+        ? Get.find<TalukaController>()
+        : Get.put(TalukaController());
+    _selectedTalukaId = widget.talukaId;
+    _selectedTalukaName = widget.talukaName;
+
+    if (talukaController.talukas.isEmpty) {
+      talukaController.getTalukas();
+    }
     subServiceController.getSubServices(
       serviceId: widget.serviceId,
+      talukaId: _selectedTalukaId,
     );
   }
 
   @override
   void dispose() {
-    _searchDebounce.dispose();
-    _searchController.dispose();
     super.dispose();
-  }
-
-  List<SubServiceData> _filteredSubServices(
-    List<SubServiceData> subServices,
-    String searchQuery,
-  ) {
-    final query = searchQuery.trim().toLowerCase();
-    if (identical(_lastSource, subServices) && _lastQuery == query) {
-      return _cachedSubServices;
-    }
-
-    _lastSource = subServices;
-    _lastQuery = query;
-
-    if (query.isEmpty) {
-      _cachedSubServices = subServices;
-      return _cachedSubServices;
-    }
-
-    _cachedSubServices = subServices.where((subService) {
-      final name = subService.name?.toLowerCase() ?? '';
-      final description = subService.description?.toLowerCase() ?? '';
-
-      return name.contains(query) || description.contains(query);
-    }).toList();
-
-    return _cachedSubServices;
   }
 
   Future<void> _refreshSubServices() => subServiceController.getSubServices(
         serviceId: widget.serviceId,
+        talukaId: _selectedTalukaId,
       );
+
+  void _onTalukaChanged(TalukaData? taluka) {
+    setState(() {
+      _selectedTalukaId = taluka?.id;
+      _selectedTalukaName = taluka?.name;
+    });
+    subServiceController.getSubServices(
+      serviceId: widget.serviceId,
+      talukaId: taluka?.id,
+    );
+  }
 
   List<SubServiceData> _subServicesForRender(SubServiceController controller) {
     if (controller.subServices.isNotEmpty) {
@@ -127,60 +112,50 @@ class _SubServiceScreenState extends State<SubServiceScreen> {
         padding: const EdgeInsets.fromLTRB(16, 18, 16, 0),
         child: Column(
           children: [
-            SearchFilterBar(
-              controller: _searchController,
-              hintText: AppString.searchSubServices,
-              onSearchChanged: (value) => _searchInput.value = value,
+            TalukaFilterDropdown(
+              selectedTalukaId: _selectedTalukaId,
+              onChanged: _onTalukaChanged,
+              onRetry: talukaController.getTalukas,
             ),
             const SizedBox(height: 20),
             Expanded(
-              child: Obx(
-                () {
-                  final currentSearchQuery = _searchQuery.value;
+              child: GetBuilder<SubServiceController>(
+                builder: (controller) {
+                  final subServices = _subServicesForRender(
+                    controller,
+                  );
 
-                  return GetBuilder<SubServiceController>(
-                    builder: (controller) {
-                      final sourceSubServices = _subServicesForRender(
-                        controller,
-                      );
+                  if (controller.isLoading && subServices.isEmpty) {
+                    return const _SubServiceSkeletonList();
+                  }
 
-                      if (controller.isLoading && sourceSubServices.isEmpty) {
-                        return const _SubServiceSkeletonList();
-                      }
+                  if (subServices.isEmpty) {
+                    return _SubServiceEmptyState(
+                      searchQuery: '',
+                      onRefresh: _refreshSubServices,
+                      onRetry: _refreshSubServices,
+                    );
+                  }
 
-                      final subServices = _filteredSubServices(
-                        sourceSubServices,
-                        currentSearchQuery,
-                      );
+                  return RefreshIndicator(
+                    onRefresh: _refreshSubServices,
+                    child: ListView.separated(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      itemCount: subServices.length,
+                      separatorBuilder: (_, __) => const SizedBox(height: 12),
+                      itemBuilder: (context, index) {
+                        final subService = subServices[index];
+                        final subServiceName =
+                            subService.name ?? 'Unnamed sub service';
 
-                      if (subServices.isEmpty) {
-                        return _SubServiceEmptyState(
-                          searchQuery: currentSearchQuery.trim(),
-                          onRefresh: _refreshSubServices,
-                          onRetry: _refreshSubServices,
+                        return _SubServiceTile(
+                          subService: subService,
+                          subServiceName: subServiceName,
+                          talukaId: _selectedTalukaId,
+                          talukaName: _selectedTalukaName,
                         );
-                      }
-
-                      return RefreshIndicator(
-                        onRefresh: _refreshSubServices,
-                        child: ListView.separated(
-                          physics: const AlwaysScrollableScrollPhysics(),
-                          itemCount: subServices.length,
-                          separatorBuilder: (_, __) =>
-                              const SizedBox(height: 12),
-                          itemBuilder: (context, index) {
-                            final subService = subServices[index];
-                            final subServiceName =
-                                subService.name ?? 'Unnamed sub service';
-
-                            return _SubServiceTile(
-                              subService: subService,
-                              subServiceName: subServiceName,
-                            );
-                          },
-                        ),
-                      );
-                    },
+                      },
+                    ),
                   );
                 },
               ),
@@ -195,10 +170,14 @@ class _SubServiceScreenState extends State<SubServiceScreen> {
 class _SubServiceTile extends StatelessWidget {
   final SubServiceData subService;
   final String subServiceName;
+  final int? talukaId;
+  final String? talukaName;
 
   const _SubServiceTile({
     required this.subService,
     required this.subServiceName,
+    required this.talukaId,
+    required this.talukaName,
   });
 
   @override
@@ -233,6 +212,8 @@ class _SubServiceTile extends StatelessWidget {
               () => ServiceDetailScreen(
                 subserviceId: subService.id,
                 subserviceName: subServiceName,
+                talukaId: talukaId,
+                talukaName: talukaName,
               ),
             );
           },

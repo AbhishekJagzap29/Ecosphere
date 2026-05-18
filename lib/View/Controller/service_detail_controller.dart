@@ -11,6 +11,7 @@ class ServiceDetailController extends GetxController {
 
   Future<void> getServiceDetails({
     int? subserviceId,
+    int? talukaId,
   }) async {
     try {
       isLoading = true;
@@ -19,6 +20,7 @@ class ServiceDetailController extends GetxController {
 
       final response = await ServiceDetailRepo().serviceDetailListRepo(
         subserviceId: subserviceId,
+        talukaId: talukaId,
       );
 
       if (response.status?.toLowerCase() == 'success') {

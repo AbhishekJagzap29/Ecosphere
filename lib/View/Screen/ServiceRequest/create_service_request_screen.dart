@@ -36,6 +36,7 @@ class _CreateServiceRequestScreenState
   final TextEditingController _subserviceTextController =
       TextEditingController();
   final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _ownerIdController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _discountController = TextEditingController();
@@ -72,6 +73,7 @@ class _CreateServiceRequestScreenState
     _serviceTextController.dispose();
     _subserviceTextController.dispose();
     _nameController.dispose();
+    _ownerIdController.dispose();
     _addressController.dispose();
     _phoneController.dispose();
     _discountController.dispose();
@@ -155,6 +157,14 @@ class _CreateServiceRequestScreenState
                 icon: Icons.person_outline_rounded,
                 textInputAction: TextInputAction.next,
               ),
+              const SizedBox(height: 14),
+                  _RequestTextField(
+                    controller: _ownerIdController,
+                    labelText: 'Owner',
+                    icon: Icons.badge_outlined,
+                    keyboardType: TextInputType.text,
+                    textInputAction: TextInputAction.next,
+                  ),           
               const SizedBox(height: 14),
               _RequestTextField(
                 controller: _addressController,
@@ -259,6 +269,7 @@ class _CreateServiceRequestScreenState
     final serviceName = _serviceTextController.text.trim();
     final subserviceName = _subserviceTextController.text.trim();
     final name = _nameController.text.trim();
+    final ownerId = _ownerIdController.text.trim();
     final address = _addressController.text.trim();
     final phone = _phoneController.text.trim();
 
@@ -277,6 +288,11 @@ class _CreateServiceRequestScreenState
       return;
     }
 
+    if (ownerId.isEmpty) {
+      errorSnackBar('Request Failed', 'Owner ID is required');
+      return;
+    }
+
     if (address.isEmpty) {
       errorSnackBar('Request Failed', 'Address is required');
       return;
@@ -291,6 +307,7 @@ class _CreateServiceRequestScreenState
       service: serviceName,
       subservice: subserviceName,
       name: name,
+      ownerId: ownerId,
       address: address,
       phone: phone,
       discount: _discountController.text,

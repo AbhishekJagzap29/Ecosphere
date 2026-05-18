@@ -1,21 +1,28 @@
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:echosphere/Api/ResponseModel/taluka_response_model.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:echosphere/Api/ResponseModel/service_detail_response_model.dart';
 import 'package:echosphere/View/Constant/app_string.dart';
 import 'package:echosphere/View/Controller/service_detail_controller.dart';
 import 'package:echosphere/View/Constant/app_color.dart';
+import 'package:echosphere/View/Controller/taluka_controller.dart';
+import 'package:echosphere/View/Widgets/taluka_filter_dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class ServiceDetailScreen extends StatefulWidget {
   final int? subserviceId;
   final String? subserviceName;
+  final int? talukaId;
+  final String? talukaName;
 
   const ServiceDetailScreen({
     super.key,
     this.subserviceId,
     this.subserviceName,
+    this.talukaId,
+    this.talukaName,
   });
 
   @override
@@ -25,13 +32,25 @@ class ServiceDetailScreen extends StatefulWidget {
 class _ServiceDetailScreenState extends State<ServiceDetailScreen> {
   final ServiceDetailController serviceDetailController =
       Get.put(ServiceDetailController());
+  late final TalukaController talukaController;
+  int? _selectedTalukaId;
+  String? _selectedTalukaName;
 
   @override
   void initState() {
     super.initState();
+    talukaController = Get.isRegistered<TalukaController>()
+        ? Get.find<TalukaController>()
+        : Get.put(TalukaController());
+    _selectedTalukaId = widget.talukaId;
+    _selectedTalukaName = widget.talukaName;
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (talukaController.talukas.isEmpty) {
+        talukaController.getTalukas();
+      }
       serviceDetailController.getServiceDetails(
         subserviceId: widget.subserviceId,
+        talukaId: _selectedTalukaId,
       );
     });
   }
@@ -39,7 +58,29 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> {
   Future<void> _refreshServiceDetails() =>
       serviceDetailController.getServiceDetails(
         subserviceId: widget.subserviceId,
+        talukaId: _selectedTalukaId,
       );
+
+  void _onTalukaChanged(TalukaData? taluka) {
+    setState(() {
+      _selectedTalukaId = taluka?.id;
+      _selectedTalukaName = taluka?.name;
+    });
+    serviceDetailController.getServiceDetails(
+      subserviceId: widget.subserviceId,
+      talukaId: taluka?.id,
+    );
+  }
+
+  List<ServiceDetailData> _filteredServiceDetails(
+    List<ServiceDetailData> details,
+  ) {
+    if (_selectedTalukaId == null) return details;
+
+    return details.where((detail) {
+      return detail.talukaId == _selectedTalukaId;
+    }).toList();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,46 +97,65 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> {
           ),
         ),
       ),
-      body: GetBuilder<ServiceDetailController>(
-        builder: (controller) {
-          if (controller.isLoading) {
-            return const Center(
-              child: CircularProgressIndicator(
-                color: primaryGreenColor,
-              ),
-            );
-          }
-
-          if (controller.serviceDetails.isEmpty) {
-            return RefreshIndicator(
-              onRefresh: _refreshServiceDetails,
-              child: ListView(
-                physics: const AlwaysScrollableScrollPhysics(),
-                children: const [
-                  SizedBox(height: 180),
-                  Center(
-                    child: Text(AppString.noServiceDetailsFound),
-                  ),
-                ],
-              ),
-            );
-          }
-
-          return RefreshIndicator(
-            onRefresh: _refreshServiceDetails,
-            child: ListView.separated(
-              physics: const AlwaysScrollableScrollPhysics(),
-              padding: const EdgeInsets.all(16),
-              itemCount: controller.serviceDetails.length,
-              separatorBuilder: (_, __) => const SizedBox(height: 12),
-              itemBuilder: (context, index) {
-                final detail = controller.serviceDetails[index];
-
-                return _ServiceDetailCard(detail: detail);
-              },
+      body: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 18, 16, 0),
+        child: Column(
+          children: [
+            TalukaFilterDropdown(
+              selectedTalukaId: _selectedTalukaId,
+              onChanged: _onTalukaChanged,
+              onRetry: talukaController.getTalukas,
             ),
-          );
-        },
+            const SizedBox(height: 8),
+            Expanded(
+              child: GetBuilder<ServiceDetailController>(
+                builder: (controller) {
+                  if (controller.isLoading) {
+                    return const Center(
+                      child: CircularProgressIndicator(
+                        color: primaryGreenColor,
+                      ),
+                    );
+                  }
+
+                  final serviceDetails = _filteredServiceDetails(
+                    controller.serviceDetails,
+                  );
+
+                  if (serviceDetails.isEmpty) {
+                    return RefreshIndicator(
+                      onRefresh: _refreshServiceDetails,
+                      child: ListView(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        children: const [
+                          SizedBox(height: 160),
+                          Center(
+                            child: Text(AppString.noServiceDetailsFound),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+
+                  return RefreshIndicator(
+                    onRefresh: _refreshServiceDetails,
+                    child: ListView.separated(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      padding: const EdgeInsets.only(bottom: 16),
+                      itemCount: serviceDetails.length,
+                      separatorBuilder: (_, __) => const SizedBox(height: 12),
+                      itemBuilder: (context, index) {
+                        final detail = serviceDetails[index];
+
+                        return _ServiceDetailCard(detail: detail);
+                      },
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -300,16 +360,22 @@ class _SocialLinkButton extends StatelessWidget {
   });
 
   Future<void> _openLink() async {
-    final uri = _parseUrl(link.url);
-    if (uri == null) return;
+  final uri = _parseUrl(link.url);
 
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(
-        uri,
-        mode: LaunchMode.externalApplication,
-      );
-    }
+  if (uri == null) {
+    debugPrint("Invalid URL");
+    return;
   }
+
+  try {
+    await launchUrl(
+      uri,
+      mode: LaunchMode.externalApplication,
+    );
+  } catch (e) {
+    debugPrint("Error launching URL: $e");
+  }
+}
 
   Uri? _parseUrl(String value) {
     final trimmedUrl = value.trim();
