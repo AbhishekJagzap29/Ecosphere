@@ -172,6 +172,7 @@ class _ServiceDetailCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final name = detail.name ?? 'Unnamed record';
     final discount = double.tryParse(detail.discount ?? '');
+    final discounts = detail.discounts;
 
     return Card(
       elevation: 0,
@@ -184,7 +185,10 @@ class _ServiceDetailCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _DetailImage(image: detail.image),
+            _DetailGallery(
+              image: detail.image,
+              galleryImages: detail.galleryImages,
+            ),
             Text(
               name,
               style: const TextStyle(
@@ -208,7 +212,17 @@ class _ServiceDetailCard extends StatelessWidget {
               _PhoneRow(
                 phone: detail.phone!,
               ),
-            if (discount != null)
+            if (detail.facilities.isNotEmpty)
+              _DetailRow(
+                icon: Icons.check_circle_outline,
+                text: 'Facilities : ${detail.facilities.join(', ')}',
+              ),
+            if (discounts.isNotEmpty)
+              _DetailRow(
+                icon: Icons.local_offer_outlined,
+                text: 'Discounts : ${discounts.join(', ')}',
+              )
+            else if (discount != null)
               _DetailRow(
                 icon: Icons.local_offer_outlined,
                 text: '${discount.toInt()}% Discount',
@@ -221,28 +235,45 @@ class _ServiceDetailCard extends StatelessWidget {
   }
 }
 
-class _DetailImage extends StatelessWidget {
+class _DetailGallery extends StatelessWidget {
   final String? image;
+  final List<String> galleryImages;
 
-  const _DetailImage({
+  const _DetailGallery({
     required this.image,
+    required this.galleryImages,
   });
 
   @override
   Widget build(BuildContext context) {
-    final imageBytes = _decodeImage(image);
-    if (imageBytes == null) return const SizedBox.shrink();
+    final images = [
+      ...galleryImages,
+      if (galleryImages.isEmpty && image != null) image!,
+    ].map(_decodeImage).whereType<Uint8List>().toList();
+
+    if (images.isEmpty) return const SizedBox.shrink();
+
+    if (images.length == 1) {
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 12),
+        child: _GalleryImage(imageBytes: images.first),
+      );
+    }
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(8),
-        child: Image.memory(
-          imageBytes,
-          width: double.infinity,
-          height: 160,
-          fit: BoxFit.cover,
-          gaplessPlayback: true,
+      child: SizedBox(
+        height: 160,
+        child: ListView.separated(
+          scrollDirection: Axis.horizontal,
+          itemCount: images.length,
+          separatorBuilder: (_, __) => const SizedBox(width: 10),
+          itemBuilder: (context, index) {
+            return SizedBox(
+              width: MediaQuery.sizeOf(context).width * 0.62,
+              child: _GalleryImage(imageBytes: images[index]),
+            );
+          },
         ),
       ),
     );
@@ -252,10 +283,33 @@ class _DetailImage extends StatelessWidget {
     if (value == null || value.isEmpty) return null;
 
     try {
-      return base64Decode(value);
+      final imageData = value.contains(',') ? value.split(',').last : value;
+      return base64Decode(imageData);
     } catch (_) {
       return null;
     }
+  }
+}
+
+class _GalleryImage extends StatelessWidget {
+  final Uint8List imageBytes;
+
+  const _GalleryImage({
+    required this.imageBytes,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(8),
+      child: Image.memory(
+        imageBytes,
+        width: double.infinity,
+        height: 160,
+        fit: BoxFit.cover,
+        gaplessPlayback: true,
+      ),
+    );
   }
 }
 
@@ -360,22 +414,22 @@ class _SocialLinkButton extends StatelessWidget {
   });
 
   Future<void> _openLink() async {
-  final uri = _parseUrl(link.url);
+    final uri = _parseUrl(link.url);
 
-  if (uri == null) {
-    debugPrint("Invalid URL");
-    return;
-  }
+    if (uri == null) {
+      debugPrint("Invalid URL");
+      return;
+    }
 
-  try {
-    await launchUrl(
-      uri,
-      mode: LaunchMode.externalApplication,
-    );
-  } catch (e) {
-    debugPrint("Error launching URL: $e");
+    try {
+      await launchUrl(
+        uri,
+        mode: LaunchMode.externalApplication,
+      );
+    } catch (e) {
+      debugPrint("Error launching URL: $e");
+    }
   }
-}
 
   Uri? _parseUrl(String value) {
     final trimmedUrl = value.trim();

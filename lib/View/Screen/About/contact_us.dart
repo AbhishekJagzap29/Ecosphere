@@ -10,9 +10,17 @@ class ContactUsScreen extends StatelessWidget {
   static const String _whatsapp = '9272031602';
   static const String _website = '';
 
-  static const List<String> _addresses = [
-    'Shop No.26, Sai Kuber Complex, Sai Kuber City, Yeola Road, Kopargaon (Ahilyanagar)',
-    'Flat No.09, Narayan Deep, Housing Society Ltd., Anand Nagar, Devlali, Nashik-422401',
+  static const List<_BranchAddress> _addresses = [
+    _BranchAddress(
+      title: 'Sub Branch',
+      address:
+          'Shop No.26, Sai Kuber Complex, Sai Kuber City, Yeola Road, Kopargaon (Ahilyanagar)',
+    ),
+    _BranchAddress(
+      title: 'Main Branch',
+      address:
+          'Flat No.09, Narayan Deep, Housing Society Ltd., Anand Nagar, Devlali, Nashik-422401',
+    ),
   ];
 
   @override
@@ -75,19 +83,18 @@ class ContactUsScreen extends StatelessWidget {
                   title: 'Website',
                   value: _website.isEmpty ? 'Not available' : _website,
                   isEnabled: _website.isNotEmpty,
-                  onTap: _website.isEmpty
-                      ? null
-                      : () => _launchWebsite(_website),
+                  onTap:
+                      _website.isEmpty ? null : () => _launchWebsite(_website),
                 ),
                 const SizedBox(height: 8),
                 const _SectionTitle(title: 'Office Address'),
                 const SizedBox(height: 12),
                 ..._addresses.map(
-                  (address) => _ContactActionTile(
+                  (branch) => _ContactActionTile(
                     icon: Icons.location_on_outlined,
-                    title: 'Office',
-                    value: address,
-                    onTap: () => _launchMap(address),
+                    title: branch.title,
+                    value: branch.address,
+                    onTap: () => _launchMap(branch.address),
                   ),
                 ),
               ],
@@ -119,9 +126,8 @@ class ContactUsScreen extends StatelessWidget {
   }
 
   static Future<void> _launchWebsite(String website) async {
-    final normalized = website.startsWith(RegExp(r'https?://'))
-        ? website
-        : 'https://$website';
+    final normalized =
+        website.startsWith(RegExp(r'https?://')) ? website : 'https://$website';
     await _openUri(Uri.parse(normalized));
   }
 
@@ -155,6 +161,16 @@ class ContactUsScreen extends StatelessWidget {
       debugPrint('Could not launch $uri: $error');
     }
   }
+}
+
+class _BranchAddress {
+  final String title;
+  final String address;
+
+  const _BranchAddress({
+    required this.title,
+    required this.address,
+  });
 }
 
 class _CompanyCard extends StatelessWidget {
@@ -237,12 +253,24 @@ class _CompanyCard extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 10),
-                Text(
-                  'CIN-U73200MH2024PTC435914',
-                  style: TextStyle(
-                    color: premiumMutedTextColor,
-                    fontSize: 12.5,
-                    fontWeight: FontWeight.w600,
+                // Text(
+                //   'CIN-U73200MH2024PTC435914',
+                //   style: TextStyle(
+                //     color: premiumMutedTextColor,
+                //     fontSize: 12.5,
+                //     fontWeight: FontWeight.w600,
+                //   ),
+                // ),
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  alignment: Alignment.centerLeft,
+                  child: const Text(
+                    'CIN - U73200MH2024PTC435914',
+                    style: TextStyle(
+                      color: premiumMutedTextColor,
+                      fontSize: 12.5,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
               ],
@@ -342,15 +370,30 @@ class _ContactActionTile extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 6),
-                  Text(
-                    value,
-                    style: TextStyle(
-                      color: effectiveTextColor,
-                      fontSize: 14.6,
-                      height: 1.35,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
+                  title == 'Email'
+                      ? FittedBox(
+                          fit: BoxFit.scaleDown,
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            value,
+                            maxLines: 1,
+                            style: TextStyle(
+                              color: effectiveTextColor,
+                              fontSize: 14.6,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        )
+                      : Text(
+                          value,
+                          softWrap: true,
+                          style: TextStyle(
+                            color: effectiveTextColor,
+                            fontSize: 14.6,
+                            height: 1.5,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
                 ],
               ),
             ),

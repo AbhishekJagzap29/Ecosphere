@@ -15,11 +15,12 @@ class CreateServiceRequestController extends GetxController {
     required String ownerId,
     required String address,
     required String phone,
-    String? discount,
+    List<String> discounts = const [],
     String? youtubeLink,
     String? facebookLink,
     String? instagramLink,
-    String? image,
+    List<String> galleryImages = const [],
+    List<String> facilities = const [],
   }) async {
     try {
       isLoading = true;
@@ -32,11 +33,18 @@ class CreateServiceRequestController extends GetxController {
         'owner_id': ownerId.trim(),
         'address': address.trim(),
         'phone': phone.trim(),
-        if (_hasText(discount)) 'discount': discount!.trim(),
+        'discounts': discounts,
         if (_hasText(youtubeLink)) 'youtube_link': youtubeLink!.trim(),
         if (_hasText(facebookLink)) 'facebook_link': facebookLink!.trim(),
         if (_hasText(instagramLink)) 'instagram_link': instagramLink!.trim(),
-        if (_hasText(image)) 'image': image!.trim(),
+        'gallery_images': galleryImages
+            .map((image) => image.trim())
+            .where((image) => image.isNotEmpty)
+            .toList(),
+        'facilities': facilities
+            .map((facility) => facility.trim())
+            .where((facility) => facility.isNotEmpty)
+            .toList(),
         if (_executiveUserId != null) 'user_id': _executiveUserId,
         if (_executiveUserId != null) 'executive_user_id': _executiveUserId,
       };

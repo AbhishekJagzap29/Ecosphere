@@ -91,24 +91,24 @@ class _SplashScreenState extends State<SplashScreen> {
                 ),
               ),
               const SizedBox(height: 20),
-              const Text(
-                'ECHOSPHERE',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 2,
-                  color: whiteColor,
-                ),
-              ),
+              // const Text(
+              //   'ECHOSPHERE',
+              //   style: TextStyle(
+              //     fontSize: 24,
+              //     fontWeight: FontWeight.bold,
+              //     letterSpacing: 2,
+              //     color: whiteColor,
+              //   ),
+              // ),
               const SizedBox(height: 10),
-              const Text(
-                'Apno ke Liye...',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontStyle: FontStyle.italic,
-                  color: goldHighlightColor,
-                ),
-              ),
+              // const Text(
+              //   'Apno ke Liye...',
+              //   style: TextStyle(
+              //     fontSize: 14,
+              //     fontStyle: FontStyle.italic,
+              //     color: goldHighlightColor,
+              //   ),
+              // ),
             ],
           ),
         ),

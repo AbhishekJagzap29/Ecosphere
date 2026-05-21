@@ -46,11 +46,14 @@ class ServiceDetailData {
   String? address;
   String? phone;
   String? discount;
+  List<String> discounts;
   int? subserviceId;
   String? subserviceName;
   int? talukaId;
   String? talukaName;
   String? image;
+  List<String> galleryImages;
+  List<String> facilities;
   String? youtubeLink;
   String? facebookLink;
   String? instagramLink;
@@ -62,11 +65,14 @@ class ServiceDetailData {
     this.address,
     this.phone,
     this.discount,
+    this.discounts = const [],
     this.subserviceId,
     this.subserviceName,
     this.talukaId,
     this.talukaName,
     this.image,
+    this.galleryImages = const [],
+    this.facilities = const [],
     this.youtubeLink,
     this.facebookLink,
     this.instagramLink,
@@ -80,11 +86,14 @@ class ServiceDetailData {
       address: _readString(json['address']),
       phone: _readString(json['phone']),
       discount: _readString(json['discount']),
+      discounts: _readStringList(json['discounts']),
       subserviceId: _readInt(json['subservice_id']),
       subserviceName: _readString(json['subservice_name']),
       talukaId: _readInt(json['taluka_id']),
       talukaName: _readString(json['taluka_name']),
       image: _readString(json['image']),
+      galleryImages: _readStringList(json['gallery_images']),
+      facilities: _readStringList(json['facilities']),
       youtubeLink: _readString(json['youtube_link']),
       facebookLink: _readString(json['facebook_link']),
       instagramLink: _readString(json['instagram_link']),
@@ -99,11 +108,14 @@ class ServiceDetailData {
       'address': address,
       'phone': phone,
       'discount': discount,
+      'discounts': discounts,
       'subservice_id': subserviceId,
       'subservice_name': subserviceName,
       'taluka_id': talukaId,
       'taluka_name': talukaName,
       'image': image,
+      'gallery_images': galleryImages,
+      'facilities': facilities,
       'youtube_link': youtubeLink,
       'facebook_link': facebookLink,
       'instagram_link': instagramLink,
@@ -124,5 +136,15 @@ class ServiceDetailData {
     if (value is num) return value.toString();
 
     return null;
+  }
+
+  static List<String> _readStringList(dynamic value) {
+    if (value is! List) return [];
+
+    return value
+        .map(_readString)
+        .whereType<String>()
+        .where((image) => image.isNotEmpty)
+        .toList();
   }
 }

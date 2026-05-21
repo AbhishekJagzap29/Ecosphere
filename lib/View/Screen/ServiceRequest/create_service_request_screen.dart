@@ -44,15 +44,14 @@ class _CreateServiceRequestScreenState
   final TextEditingController _facebookLinkController = TextEditingController();
   final TextEditingController _instagramLinkController =
       TextEditingController();
+  final TextEditingController _facilitiesController = TextEditingController();
   final FocusNode _serviceFocusNode = FocusNode();
   final FocusNode _subserviceFocusNode = FocusNode();
 
   final ImagePicker _imagePicker = ImagePicker();
   ServiceData? _selectedService;
   SubServiceData? _selectedSubService;
-  Uint8List? _selectedImageBytes;
-  String? _selectedImageBase64;
-  String? _selectedImageName;
+  final List<_SelectedGalleryImage> _selectedGalleryImages = [];
 
   @override
   void initState() {
@@ -80,6 +79,7 @@ class _CreateServiceRequestScreenState
     _youtubeLinkController.dispose();
     _facebookLinkController.dispose();
     _instagramLinkController.dispose();
+    _facilitiesController.dispose();
     _serviceFocusNode.dispose();
     _subserviceFocusNode.dispose();
     super.dispose();
@@ -158,13 +158,13 @@ class _CreateServiceRequestScreenState
                 textInputAction: TextInputAction.next,
               ),
               const SizedBox(height: 14),
-                  _RequestTextField(
-                    controller: _ownerIdController,
-                    labelText: 'Owner',
-                    icon: Icons.badge_outlined,
-                    keyboardType: TextInputType.text,
-                    textInputAction: TextInputAction.next,
-                  ),           
+              _RequestTextField(
+                controller: _ownerIdController,
+                labelText: 'Owner',
+                icon: Icons.badge_outlined,
+                keyboardType: TextInputType.text,
+                textInputAction: TextInputAction.next,
+              ),
               const SizedBox(height: 14),
               _RequestTextField(
                 controller: _addressController,
@@ -186,10 +186,18 @@ class _CreateServiceRequestScreenState
               ),
               const SizedBox(height: 14),
               _RequestTextField(
+                controller: _facilitiesController,
+                labelText: 'Facilities',
+                icon: Icons.check_circle_outline,
+                textInputAction: TextInputAction.next,
+              ),
+              const SizedBox(height: 14),
+              _RequestTextField(
                 controller: _discountController,
                 labelText: 'Discount',
                 icon: Icons.percent_outlined,
-                keyboardType: TextInputType.number,
+                // keyboardType: TextInputType.number,
+                keyboardType: TextInputType.text,
                 textInputAction: TextInputAction.next,
               ),
               const SizedBox(height: 14),
@@ -217,11 +225,12 @@ class _CreateServiceRequestScreenState
                 textInputAction: TextInputAction.next,
               ),
               const SizedBox(height: 14),
+              
               _ImagePickerField(
-                imageBytes: _selectedImageBytes,
-                imageName: _selectedImageName,
+                images: _selectedGalleryImages,
                 onTap: _showImageSourcePicker,
-                onClear: _clearSelectedImage,
+                onClearImage: _removeSelectedImage,
+                onClearAll: _clearSelectedImages,
               ),
               const SizedBox(height: 24),
               SizedBox(
@@ -310,11 +319,13 @@ class _CreateServiceRequestScreenState
       ownerId: ownerId,
       address: address,
       phone: phone,
-      discount: _discountController.text,
+      discounts: _parseDiscounts(),
       youtubeLink: _youtubeLinkController.text,
       facebookLink: _facebookLinkController.text,
       instagramLink: _instagramLinkController.text,
-      image: _selectedImageBase64,
+      galleryImages:
+          _selectedGalleryImages.map((image) => image.base64).toList(),
+      facilities: _parseFacilities(),
     );
 
     if (!mounted) return;
@@ -389,7 +400,7 @@ class _CreateServiceRequestScreenState
                   ),
                   onTap: () {
                     Navigator.of(context).pop();
-                    _pickImage(ImageSource.gallery);
+                    _pickGalleryImages();
                   },
                 ),
               ],
@@ -414,22 +425,89 @@ class _CreateServiceRequestScreenState
       if (!mounted) return;
 
       setState(() {
-        _selectedImageBytes = bytes;
-        _selectedImageBase64 = base64Encode(bytes);
-        _selectedImageName = image.name;
+        _selectedGalleryImages.add(
+          _SelectedGalleryImage(
+            bytes: bytes,
+            base64: base64Encode(bytes),
+            name: image.name,
+          ),
+        );
       });
     } catch (e) {
       errorSnackBar('Image Failed', e.toString());
     }
   }
 
-  void _clearSelectedImage() {
+  Future<void> _pickGalleryImages() async {
+    try {
+      final images = await _imagePicker.pickMultiImage(
+        imageQuality: 75,
+        maxWidth: 1200,
+      );
+
+      if (images.isEmpty) return;
+
+      final selectedImages = <_SelectedGalleryImage>[];
+      for (final image in images) {
+        final bytes = await image.readAsBytes();
+        selectedImages.add(
+          _SelectedGalleryImage(
+            bytes: bytes,
+            base64: base64Encode(bytes),
+            name: image.name,
+          ),
+        );
+      }
+
+      if (!mounted) return;
+
+      setState(() {
+        _selectedGalleryImages.addAll(selectedImages);
+      });
+    } catch (e) {
+      errorSnackBar('Image Failed', e.toString());
+    }
+  }
+
+  List<String> _parseFacilities() {
+    return _facilitiesController.text
+        .split(',')
+        .map((facility) => facility.trim())
+        .where((facility) => facility.isNotEmpty)
+        .toList();
+  }
+
+  List<String> _parseDiscounts() {
+    return _discountController.text
+        .split(',')
+        .map((discount) => discount.trim())
+        .where((discount) => discount.isNotEmpty)
+        .toList();
+  }
+
+  void _removeSelectedImage(int index) {
     setState(() {
-      _selectedImageBytes = null;
-      _selectedImageBase64 = null;
-      _selectedImageName = null;
+      _selectedGalleryImages.removeAt(index);
     });
   }
+
+  void _clearSelectedImages() {
+    setState(() {
+      _selectedGalleryImages.clear();
+    });
+  }
+}
+
+class _SelectedGalleryImage {
+  final Uint8List bytes;
+  final String base64;
+  final String name;
+
+  const _SelectedGalleryImage({
+    required this.bytes,
+    required this.base64,
+    required this.name,
+  });
 }
 
 class _AutocompleteTextField<T extends Object> extends StatelessWidget {
@@ -545,21 +623,21 @@ class _AutocompleteTextField<T extends Object> extends StatelessWidget {
 }
 
 class _ImagePickerField extends StatelessWidget {
-  final Uint8List? imageBytes;
-  final String? imageName;
+  final List<_SelectedGalleryImage> images;
   final VoidCallback onTap;
-  final VoidCallback onClear;
+  final ValueChanged<int> onClearImage;
+  final VoidCallback onClearAll;
 
   const _ImagePickerField({
-    required this.imageBytes,
-    required this.imageName,
+    required this.images,
     required this.onTap,
-    required this.onClear,
+    required this.onClearImage,
+    required this.onClearAll,
   });
 
   @override
   Widget build(BuildContext context) {
-    final hasImage = imageBytes != null;
+    final hasImages = images.isNotEmpty;
 
     return Material(
       color: transparentColor,
@@ -568,7 +646,7 @@ class _ImagePickerField extends StatelessWidget {
         onTap: onTap,
         child: Container(
           constraints: BoxConstraints(
-            minHeight: hasImage ? 112 : 58,
+            minHeight: hasImages ? 150 : 58,
           ),
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
@@ -577,31 +655,33 @@ class _ImagePickerField extends StatelessWidget {
             border: Border.all(color: premiumGoldBorderColor),
           ),
           child: Row(
+            crossAxisAlignment: hasImages
+                ? CrossAxisAlignment.start
+                : CrossAxisAlignment.center,
             children: [
               Container(
-                width: hasImage ? 88 : 34,
-                height: hasImage ? 88 : 34,
+                width: 34,
+                height: 34,
                 decoration: BoxDecoration(
                   color: premiumSurfaceColor,
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(color: premiumGoldBorderColor),
                 ),
                 clipBehavior: Clip.antiAlias,
-                child: hasImage
-                    ? Image.memory(imageBytes!, fit: BoxFit.cover)
-                    : const Icon(
-                        Icons.image_outlined,
-                        color: goldPrimaryColor,
-                      ),
+                child: const Icon(
+                  Icons.image_outlined,
+                  color: goldPrimaryColor,
+                ),
               ),
               const SizedBox(width: 12),
               Expanded(
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      hasImage ? 'Image selected' : 'Upload Image',
+                      hasImages
+                          ? '${images.length} images selected'
+                          : 'Upload Images',
                       style: const TextStyle(
                         color: premiumTextColor,
                         fontWeight: FontWeight.w700,
@@ -609,20 +689,75 @@ class _ImagePickerField extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      hasImage
-                          ? imageName ?? 'Tap to change image'
+                      hasImages
+                          ? 'Tap to add more images'
                           : 'Choose from camera or gallery',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(color: premiumMutedTextColor),
                     ),
+                    if (hasImages) ...[
+                      const SizedBox(height: 12),
+                      SizedBox(
+                        height: 74,
+                        child: ListView.separated(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: images.length,
+                          separatorBuilder: (_, __) => const SizedBox(width: 8),
+                          itemBuilder: (context, index) {
+                            final image = images[index];
+
+                            return Stack(
+                              children: [
+                                Container(
+                                  width: 74,
+                                  height: 74,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    border: Border.all(
+                                      color: premiumGoldBorderColor,
+                                    ),
+                                  ),
+                                  clipBehavior: Clip.antiAlias,
+                                  child: Image.memory(
+                                    image.bytes,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                                Positioned(
+                                  top: 2,
+                                  right: 2,
+                                  child: InkWell(
+                                    onTap: () => onClearImage(index),
+                                    borderRadius: BorderRadius.circular(12),
+                                    child: Container(
+                                      width: 22,
+                                      height: 22,
+                                      decoration: const BoxDecoration(
+                                        color: luxuryBlackColor,
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: const Icon(
+                                        Icons.close_rounded,
+                                        size: 15,
+                                        color: whiteColor,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+                      ),
+                    ],
                   ],
                 ),
               ),
-              if (hasImage)
+              if (hasImages)
                 IconButton(
-                  tooltip: 'Remove image',
-                  onPressed: onClear,
+                  tooltip: 'Remove all images',
+                  onPressed: onClearAll,
                   icon: const Icon(
                     Icons.close_rounded,
                     color: premiumMutedTextColor,

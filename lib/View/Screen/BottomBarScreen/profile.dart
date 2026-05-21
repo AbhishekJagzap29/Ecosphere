@@ -1,118 +1,284 @@
 import 'package:echosphere/View/Constant/app_color.dart';
 import 'package:flutter/material.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  final PageController _controller = PageController(viewportFraction: 0.94);
+  int _currentPage = 0;
+
+  late final List<Widget> _pages = [
+    const _AdventurePassCardPage(),
+    const SingleChildScrollView(
+      physics: BouncingScrollPhysics(),
+      child: _MarathiSchemeContentCard(),
+    ),
+    const SingleChildScrollView(
+      physics: BouncingScrollPhysics(),
+      child: _SchemeContentCard(),
+    ),
+  ];
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: premiumScaffoldColor,
-      body: PageView(
-  scrollDirection: Axis.horizontal,
+      body: Stack(
+        children: [
+          const _ProfileBackgroundGlow(),
+          Column(
+            children: [
+              Expanded(
+                child: PageView.builder(
+                  controller: _controller,
+                  itemCount: _pages.length,
+                  onPageChanged: (index) {
+                    setState(() => _currentPage = index);
+                  },
+                  itemBuilder: (context, index) {
+                    return _ProfilePageFrame(
+                      isActive: _currentPage == index,
+                      child: _pages[index],
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(height: 10),
+              SmoothPageIndicator(
+                controller: _controller,
+                count: _pages.length,
+                effect: const WormEffect(
+                  dotColor: premiumBorderColor,
+                  activeDotColor: goldPrimaryColor,
+                  dotHeight: 8,
+                  dotWidth: 8,
+                  spacing: 8,
+                ),
+              ),
+              const SizedBox(height: 26),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ProfilePageFrame extends StatelessWidget {
+  final Widget child;
+  final bool isActive;
+
+  const _ProfilePageFrame({
+    required this.child,
+    required this.isActive,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 400),
+      curve: Curves.easeOutCubic,
+      transform: Matrix4.identity()..scale(isActive ? 1.0 : 0.965),
+      margin: EdgeInsets.fromLTRB(
+        8,
+        isActive ? 20 : 34,
+        8,
+        isActive ? 16 : 30,
+      ),
+      child: child,
+    );
+  }
+}
+
+class _AdventurePassCardPage extends StatelessWidget {
+  const _AdventurePassCardPage();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: Colors.black,
+        borderRadius: BorderRadius.circular(28),
+        border: Border.all(
+          color: const Color(0xFFD4A017),
+          width: 2,
+        ),
+        boxShadow: const [
+          BoxShadow(
+            color: premiumShadowColor,
+            blurRadius: 20,
+            offset: Offset(0, 16),
+          ),
+          BoxShadow(
+            color: premiumGoldShadowColor,
+            blurRadius: 24,
+            offset: Offset(0, 10),
+          ),
+        ],
+      ),
+      child: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
+        child: Padding(
+          // padding: const EdgeInsets.all(24),
+          padding: const EdgeInsets.symmetric(
+  horizontal: 18,
+  vertical: 20,
+),
+          child: Column(
+            children: [
+              // TOP TITLE
+              // Row(
+              //   children: [
+              //     Expanded(
+              //       child: Container(
+              //         height: 2,
+              //         color: const Color(0xFFD4A017),
+              //       ),
+              //     ),
+              //     const SizedBox(width: 12),
+              //     const Text(
+              //       'ADVENTURE PASS',
+              //       style: TextStyle(
+              //         color: Color(0xFFD4A017),
+              //         fontSize: 28,
+              //         fontWeight: FontWeight.w900,
+              //         letterSpacing: 1,
+              //       ),
+              //     ),
+              //     const SizedBox(width: 12),
+              //     Expanded(
+              //       child: Container(
+              //         height: 2,
+              //         color: const Color(0xFFD4A017),
+              //       ),
+              //     ),
+              //   ],
+              // ),
+              Row(
   children: [
-   Padding(
-  padding: const EdgeInsets.all(20),
-  child: Container(
-    width: double.infinity,
-    decoration: BoxDecoration(
-      color: Colors.black,
-      borderRadius: BorderRadius.circular(28),
-      border: Border.all(
+
+    Expanded(
+      child: Container(
+        height: 1.5,
         color: const Color(0xFFD4A017),
-        width: 2,
       ),
     ),
-    child: SingleChildScrollView(
-      physics: const BouncingScrollPhysics(),
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          children: [
 
-            // TOP TITLE
-            Row(
-              children: [
+    const SizedBox(width: 8),
 
-                Expanded(
-                  child: Container(
-                    height: 2,
-                    color: const Color(0xFFD4A017),
-                  ),
-                ),
-
-                const SizedBox(width: 12),
-
-                const Text(
-                  'ADVENTURE PASS',
-                  style: TextStyle(
-                    color: Color(0xFFD4A017),
-                    fontSize: 28,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 1,
-                  ),
-                ),
-
-                const SizedBox(width: 12),
-
-                Expanded(
-                  child: Container(
-                    height: 2,
-                    color: const Color(0xFFD4A017),
-                  ),
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 40),
-
-            // FRONT CARD
-            ClipRRect(
-              borderRadius: BorderRadius.circular(24),
-              child: Image.asset(
-                'assets/images/Front.png',
-                fit: BoxFit.contain,
-              ),
-            ),
-
-            const SizedBox(height: 40),
-
-            // BACK CARD
-            ClipRRect(
-              borderRadius: BorderRadius.circular(24),
-              child: Image.asset(
-                'assets/images/Back.png',
-                fit: BoxFit.contain,
-              ),
-            ),
-
-            const SizedBox(height: 30),
-          ],
+    Flexible(
+      child: FittedBox(
+        fit: BoxFit.scaleDown,
+        child: const Text(
+          'ADVENTURE PASS',
+          maxLines: 1,
+          style: TextStyle(
+            color: Color(0xFFD4A017),
+            fontSize: 60,
+            fontWeight: FontWeight.w900,
+            letterSpacing: 0.8,
+          ),
         ),
       ),
     ),
-  ),
-),
 
-    // Marathi Page
-    const Padding(
-      padding: EdgeInsets.fromLTRB(20, 24, 20, 20),
-      child: SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
-        child: _MarathiSchemeContentCard(),
+    const SizedBox(width: 8),
+
+    Expanded(
+      child: Container(
+        height: 1.5,
+        color: const Color(0xFFD4A017),
       ),
     ),
 
-    // English Page
-    const Padding(
-      padding: EdgeInsets.fromLTRB(20, 24, 20, 20),
-      child: SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
-        child: _SchemeContentCard(),
-      ),
-    ),
   ],
 ),
+
+              const SizedBox(height: 40),
+
+              // FRONT CARD
+              ClipRRect(
+                borderRadius: BorderRadius.circular(24),
+                child: Image.asset(
+                  'assets/images/Front.png',
+                  fit: BoxFit.contain,
+                ),
+              ),
+
+              
+              const SizedBox(height: 26),
+
+              // BACK CARD
+              ClipRRect(
+                borderRadius: BorderRadius.circular(24),
+                child: Image.asset(
+                  'assets/images/Back.png',
+                  fit: BoxFit.contain,
+                ),
+              ),
+
+              const SizedBox(height: 30),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ProfileBackgroundGlow extends StatelessWidget {
+  const _ProfileBackgroundGlow();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Stack(
+      children: [
+        Positioned(
+          top: 42,
+          right: -72,
+          child: _ProfileGlowSpot(size: 190, opacity: 0.08),
+        ),
+        Positioned(
+          bottom: 84,
+          left: -88,
+          child: _ProfileGlowSpot(size: 220, opacity: 0.06),
+        ),
+      ],
+    );
+  }
+}
+
+class _ProfileGlowSpot extends StatelessWidget {
+  final double size;
+  final double opacity;
+
+  const _ProfileGlowSpot({
+    required this.size,
+    required this.opacity,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: size,
+      width: size,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: goldPrimaryColor.withOpacity(opacity),
+      ),
     );
   }
 }
@@ -181,14 +347,14 @@ class _SchemeContentCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Center(
-            // child: Icon(
-            //   Icons.workspace_premium_rounded,
-            //   color: goldPrimaryColor,
-            //   size: 52,
-            // ),
-          ),
+              // child: Icon(
+              //   Icons.workspace_premium_rounded,
+              //   color: goldPrimaryColor,
+              //   size: 52,
+              // ),
+              ),
           // const SizedBox(height: 18),
-          
+
           const SizedBox(height: 18),
           // Center(
           //   child: Container(
@@ -211,56 +377,52 @@ class _SchemeContentCard extends StatelessWidget {
           //   ),
           // ),
           // TOP PREMIUM GOLD BANNER
-Container(
-  width: double.infinity,
-  padding: const EdgeInsets.symmetric(
-    vertical: 22,
-    horizontal: 18,
-  ),
-  decoration: BoxDecoration(
-    gradient: const LinearGradient(
-      colors: [
-        Color(0xFFB8860B),
-        Color(0xFFFFD700),
-      ],
-    ),
-    borderRadius: BorderRadius.circular(20),
-  ),
-  child: const Column(
-    children: [
-      Icon(
-        Icons.workspace_premium_rounded,
-        size: 54,
-        color: Colors.black,
-      ),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(
+              vertical: 22,
+              horizontal: 18,
+            ),
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(
+                colors: [
+                  Color(0xFFB8860B),
+                  Color(0xFFFFD700),
+                ],
+              ),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: const Column(
+              children: [
+                Icon(
+                  Icons.workspace_premium_rounded,
+                  size: 54,
+                  color: Colors.black,
+                ),
+                SizedBox(height: 12),
+                Text(
+                  'ADVENTURE PASS',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 24,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 1,
+                  ),
+                ),
+                SizedBox(height: 10),
+                Text(
+                  'One Card - Many Benefits',
+                  style: TextStyle(
+                    color: Colors.black87,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ],
+            ),
+          ),
 
-      SizedBox(height: 12),
-
-      Text(
-        'ADVENTURE PASS',
-        style: TextStyle(
-          color: Colors.black,
-          fontSize: 24,
-          fontWeight: FontWeight.w900,
-          letterSpacing: 1,
-        ),
-      ),
-
-      SizedBox(height: 10),
-
-      Text(
-        'One Card - Many Benefits',
-        style: TextStyle(
-          color: Colors.black87,
-          fontSize: 15,
-          fontWeight: FontWeight.w700,
-        ),
-      ),
-    ],
-  ),
-),
-
-const SizedBox(height: 28),
+          const SizedBox(height: 28),
           const SizedBox(height: 26),
           const Text(
             'We are bringing trends for you!',
@@ -438,7 +600,7 @@ const SizedBox(height: 28),
 
 class _MarathiSchemeContentCard extends StatelessWidget {
   const _MarathiSchemeContentCard();
-  
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -456,10 +618,8 @@ class _MarathiSchemeContentCard extends StatelessWidget {
           ),
         ],
       ),
-      
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        
         children: [
           const SizedBox(height: 18),
           // TOP PREMIUM BANNER
@@ -478,9 +638,7 @@ class _MarathiSchemeContentCard extends StatelessWidget {
               ),
               borderRadius: BorderRadius.circular(20),
             ),
-            
             child: const Column(
-              
               children: [
                 Icon(
                   Icons.workspace_premium_rounded,
@@ -514,50 +672,45 @@ class _MarathiSchemeContentCard extends StatelessWidget {
 
           const SizedBox(height: 26),
 
-const Text(
-  'आम्ही घेऊन येत आहोत  तुमच्यासाठी फक्त ₹2500/- मध्ये 5 वर्षांसाठी संपूर्ण कुटुंबासाठी',
-  style: TextStyle(
-    color: goldPrimaryColor,
-    fontSize: 20,
-    fontWeight: FontWeight.bold,
-  ),
-),
+          const Text(
+            'आम्ही घेऊन येत आहोत  तुमच्यासाठी फक्त ₹2500/- मध्ये 5 वर्षांसाठी संपूर्ण कुटुंबासाठी',
+            style: TextStyle(
+              color: goldPrimaryColor,
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
 
+          const SizedBox(height: 14),
 
-
-const SizedBox(height: 14),
-
-Container(
-  width: double.infinity,
-  padding: const EdgeInsets.all(18),
-  decoration: BoxDecoration(
-    color: premiumScaffoldColor,
-    borderRadius: BorderRadius.circular(18),
-    border: Border.all(color: premiumGoldBorderColor),
-  ),
-  child: const Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-   
-
-      SizedBox(height: 14),
-
-      Text(
-        '''
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(18),
+            decoration: BoxDecoration(
+              color: premiumScaffoldColor,
+              borderRadius: BorderRadius.circular(18),
+              border: Border.all(color: premiumGoldBorderColor),
+            ),
+            child: const Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: 14),
+                Text(
+                  '''
 १ कार्ड अनेक फायदे
 
 ADVENTURE PASS डिस्काउंट कार्ड
 ''',
-        style: TextStyle(
-          color: premiumTextColor,
-          fontSize: 15,
-          fontWeight: FontWeight.w600,
-          height: 1.8,
-        ),
-      ),
-    ],
-  ),
-),
+                  style: TextStyle(
+                    color: premiumTextColor,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                    height: 1.8,
+                  ),
+                ),
+              ],
+            ),
+          ),
 
           const SizedBox(height: 24),
 
@@ -717,9 +870,7 @@ ADVENTURE PASS डिस्काउंट कार्ड
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-
                 SizedBox(height: 14),
-
                 Text(
                   '''
 आम्ही आमच्या कार्ड धारकासाठी कंपनीकडून ₹5 लाख रुपयांची 1 वर्ष मुदतीची विमा पॉलिसी मोफत देत आहोत.
@@ -730,13 +881,11 @@ ADVENTURE PASS डिस्काउंट कार्ड
                     height: 1.8,
                   ),
                 ),
-
                 SizedBox(height: 12),
-
                 Text(
                   '''
 सदर पॉलिसी ही जनरल इन्शुरन्स पॉलिसी असेल.
-(आपघाती संरक्षण)
+(अपघाती संरक्षण)
 ''',
                   style: TextStyle(
                     color: premiumMutedTextColor,
