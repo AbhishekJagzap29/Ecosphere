@@ -1,7 +1,7 @@
-import 'package:echosphere/View/Constant/app_color.dart';
+import 'package:dw_echosphere_app/View/Constant/app_color.dart';
 import 'package:flutter/material.dart';
-import 'package:echosphere/View/Screen/AuthScreen/splash_screen.dart';
-import 'package:echosphere/View/Utils/app_routes.dart';
+import 'package:dw_echosphere_app/View/Screen/AuthScreen/splash_screen.dart';
+import 'package:dw_echosphere_app/View/Utils/app_routes.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 

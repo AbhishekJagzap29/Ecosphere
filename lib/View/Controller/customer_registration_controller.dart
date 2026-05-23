@@ -1,8 +1,8 @@
 import 'dart:developer';
 
-import 'package:echosphere/Api/Repo/customer_registration_repo.dart';
-import 'package:echosphere/Api/ResponseModel/customer_registration_response_model.dart';
-import 'package:echosphere/View/Utils/app_layout.dart';
+import 'package:dw_echosphere_app/Api/Repo/customer_registration_repo.dart';
+import 'package:dw_echosphere_app/Api/ResponseModel/customer_registration_response_model.dart';
+import 'package:dw_echosphere_app/View/Utils/app_layout.dart';
 import 'package:get/get.dart';
 
 class CustomerRegistrationController extends GetxController {

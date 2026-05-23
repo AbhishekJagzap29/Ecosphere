@@ -1,9 +1,9 @@
-import 'package:echosphere/View/Screen/AuthScreen/splash_screen.dart';
-import 'package:echosphere/View/Screen/BottomBarScreen/about_screen.dart';
-import 'package:echosphere/View/Screen/BottomBarScreen/home_screen.dart';
-import 'package:echosphere/View/Screen/BottomBarScreen/profile.dart';
+import 'package:dw_echosphere_app/View/Screen/AuthScreen/splash_screen.dart';
+import 'package:dw_echosphere_app/View/Screen/BottomBarScreen/about_screen.dart';
+import 'package:dw_echosphere_app/View/Screen/BottomBarScreen/home_screen.dart';
+import 'package:dw_echosphere_app/View/Screen/BottomBarScreen/profile.dart';
 // import 'package:echosphere/View/Screen/BottomBarScreen/service_screen.dart';
-import 'package:echosphere/View/Screen/Category/main_cat_screen.dart';
+import 'package:dw_echosphere_app/View/Screen/Category/main_cat_screen.dart';
 import 'package:get/get.dart';
 
 class Routes {

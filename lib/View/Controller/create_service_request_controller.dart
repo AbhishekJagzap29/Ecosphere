@@ -1,8 +1,8 @@
 import 'dart:developer';
-import 'package:echosphere/Api/Repo/create_service_request_repo.dart';
-import 'package:echosphere/Api/ResponseModel/create_service_request_response_model.dart';
-import 'package:echosphere/View/Constant/shared_prefs.dart';
-import 'package:echosphere/View/Utils/app_layout.dart';
+import 'package:dw_echosphere_app/Api/Repo/create_service_request_repo.dart';
+import 'package:dw_echosphere_app/Api/ResponseModel/create_service_request_response_model.dart';
+import 'package:dw_echosphere_app/View/Constant/shared_prefs.dart';
+import 'package:dw_echosphere_app/View/Utils/app_layout.dart';
 import 'package:get/get.dart';
 
 class CreateServiceRequestController extends GetxController {

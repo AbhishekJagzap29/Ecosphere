@@ -2,11 +2,11 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:echosphere/Api/Repo/auth_repo.dart';
-import 'package:echosphere/Api/ResponseModel/login_response_model.dart';
-import 'package:echosphere/Api/Services/base_service.dart';
-import 'package:echosphere/View/Constant/shared_prefs.dart';
-import 'package:echosphere/View/Utils/app_layout.dart';
+import 'package:dw_echosphere_app/Api/Repo/auth_repo.dart';
+import 'package:dw_echosphere_app/Api/ResponseModel/login_response_model.dart';
+import 'package:dw_echosphere_app/Api/Services/base_service.dart';
+import 'package:dw_echosphere_app/View/Constant/shared_prefs.dart';
+import 'package:dw_echosphere_app/View/Utils/app_layout.dart';
 import 'package:get/get.dart';
 
 class AuthController extends GetxController {

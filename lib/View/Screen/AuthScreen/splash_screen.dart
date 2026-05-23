@@ -1,7 +1,7 @@
-import 'package:echosphere/View/Constant/app_color.dart';
-import 'package:echosphere/View/Constant/shared_prefs.dart';
-import 'package:echosphere/View/Screen/AuthScreen/user_registration_screen.dart';
-import 'package:echosphere/View/Screen/BottomBarScreen/home_screen.dart';
+import 'package:dw_echosphere_app/View/Constant/app_color.dart';
+import 'package:dw_echosphere_app/View/Constant/shared_prefs.dart';
+import 'package:dw_echosphere_app/View/Screen/AuthScreen/user_registration_screen.dart';
+import 'package:dw_echosphere_app/View/Screen/BottomBarScreen/home_screen.dart';
 import 'package:flutter/material.dart';
 
 class SplashScreen extends StatefulWidget {

@@ -1,4 +1,4 @@
-package com.example.ecosphere
+package com.dw.echosphereApp
 
 import io.flutter.embedding.android.FlutterActivity
 

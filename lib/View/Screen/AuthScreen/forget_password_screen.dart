@@ -1,7 +1,7 @@
-import 'package:echosphere/View/Constant/app_color.dart';
+import 'package:dw_echosphere_app/View/Constant/app_color.dart';
 import 'package:flutter/material.dart';
-import 'package:echosphere/View/Constant/app_string.dart';
-import 'package:echosphere/View/Screen/BottomBarScreen/home_screen.dart';
+import 'package:dw_echosphere_app/View/Constant/app_string.dart';
+import 'package:dw_echosphere_app/View/Screen/BottomBarScreen/home_screen.dart';
 
 class ForgetPasswordScreen extends StatefulWidget {
   const ForgetPasswordScreen({super.key});

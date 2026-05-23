@@ -1,8 +1,8 @@
-import 'package:echosphere/View/Constant/app_color.dart';
+import 'package:dw_echosphere_app/View/Constant/app_color.dart';
 import 'package:flutter/material.dart';
-import 'package:echosphere/View/Constant/app_string.dart';
-import 'package:echosphere/View/Screen/BottomBarScreen/home_screen.dart';
-import 'package:echosphere/View/Utils/app_layout.dart';
+import 'package:dw_echosphere_app/View/Constant/app_string.dart';
+import 'package:dw_echosphere_app/View/Screen/BottomBarScreen/home_screen.dart';
+import 'package:dw_echosphere_app/View/Utils/app_layout.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});

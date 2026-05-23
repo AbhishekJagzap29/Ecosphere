@@ -1,13 +1,13 @@
 import 'dart:convert';
 import 'dart:typed_data';
-import 'package:echosphere/Api/ResponseModel/taluka_response_model.dart';
+import 'package:dw_echosphere_app/Api/ResponseModel/taluka_response_model.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:echosphere/Api/ResponseModel/service_detail_response_model.dart';
-import 'package:echosphere/View/Constant/app_string.dart';
-import 'package:echosphere/View/Controller/service_detail_controller.dart';
-import 'package:echosphere/View/Constant/app_color.dart';
-import 'package:echosphere/View/Controller/taluka_controller.dart';
-import 'package:echosphere/View/Widgets/taluka_filter_dropdown.dart';
+import 'package:dw_echosphere_app/Api/ResponseModel/service_detail_response_model.dart';
+import 'package:dw_echosphere_app/View/Constant/app_string.dart';
+import 'package:dw_echosphere_app/View/Controller/service_detail_controller.dart';
+import 'package:dw_echosphere_app/View/Constant/app_color.dart';
+import 'package:dw_echosphere_app/View/Controller/taluka_controller.dart';
+import 'package:dw_echosphere_app/View/Widgets/taluka_filter_dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

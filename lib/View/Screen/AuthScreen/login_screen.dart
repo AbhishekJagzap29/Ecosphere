@@ -1,12 +1,12 @@
-import 'package:echosphere/View/Constant/app_color.dart';
-import 'package:echosphere/View/Screen/Category/main_cat_screen.dart';
+import 'package:dw_echosphere_app/View/Constant/app_color.dart';
+import 'package:dw_echosphere_app/View/Screen/Category/main_cat_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:echosphere/View/Constant/app_string.dart';
-import 'package:echosphere/View/Screen/AuthScreen/forget_password_screen.dart';
-import 'package:echosphere/View/Screen/AuthScreen/register_screen.dart';
-import 'package:echosphere/View/Screen/BottomBarScreen/home_screen.dart';
-import 'package:echosphere/View/Controller/auth_controller.dart';
-import 'package:echosphere/View/Utils/app_layout.dart';
+import 'package:dw_echosphere_app/View/Constant/app_string.dart';
+import 'package:dw_echosphere_app/View/Screen/AuthScreen/forget_password_screen.dart';
+import 'package:dw_echosphere_app/View/Screen/AuthScreen/register_screen.dart';
+import 'package:dw_echosphere_app/View/Screen/BottomBarScreen/home_screen.dart';
+import 'package:dw_echosphere_app/View/Controller/auth_controller.dart';
+import 'package:dw_echosphere_app/View/Utils/app_layout.dart';
 import 'package:get/get.dart';
 
 class LoginScreen extends StatefulWidget {

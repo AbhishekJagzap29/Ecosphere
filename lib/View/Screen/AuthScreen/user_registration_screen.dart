@@ -1,10 +1,10 @@
-import 'package:echosphere/Api/ResponseModel/taluka_response_model.dart';
-import 'package:echosphere/View/Constant/app_color.dart';
-import 'package:echosphere/View/Constant/shared_prefs.dart';
-import 'package:echosphere/View/Controller/customer_registration_controller.dart';
-import 'package:echosphere/View/Controller/taluka_controller.dart';
-import 'package:echosphere/View/Screen/BottomBarScreen/home_screen.dart';
-import 'package:echosphere/View/Utils/app_layout.dart';
+import 'package:dw_echosphere_app/Api/ResponseModel/taluka_response_model.dart';
+import 'package:dw_echosphere_app/View/Constant/app_color.dart';
+import 'package:dw_echosphere_app/View/Constant/shared_prefs.dart';
+import 'package:dw_echosphere_app/View/Controller/customer_registration_controller.dart';
+import 'package:dw_echosphere_app/View/Controller/taluka_controller.dart';
+import 'package:dw_echosphere_app/View/Screen/BottomBarScreen/home_screen.dart';
+import 'package:dw_echosphere_app/View/Utils/app_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';

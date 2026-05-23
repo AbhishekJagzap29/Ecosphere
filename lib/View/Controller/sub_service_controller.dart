@@ -1,7 +1,7 @@
 import 'dart:developer';
-import 'package:echosphere/Api/Repo/sub_service_repo.dart';
-import 'package:echosphere/Api/ResponseModel/sub_service_response_model.dart';
-import 'package:echosphere/View/Utils/app_layout.dart';
+import 'package:dw_echosphere_app/Api/Repo/sub_service_repo.dart';
+import 'package:dw_echosphere_app/Api/ResponseModel/sub_service_response_model.dart';
+import 'package:dw_echosphere_app/View/Utils/app_layout.dart';
 import 'package:get/get.dart';
 
 class SubServiceController extends GetxController {

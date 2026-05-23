@@ -1,8 +1,8 @@
 import 'dart:developer';
 
-import 'package:echosphere/Api/ResponseModel/customer_registration_response_model.dart';
-import 'package:echosphere/Api/Services/api_services.dart';
-import 'package:echosphere/Api/Services/base_service.dart';
+import 'package:dw_echosphere_app/Api/ResponseModel/customer_registration_response_model.dart';
+import 'package:dw_echosphere_app/Api/Services/api_services.dart';
+import 'package:dw_echosphere_app/Api/Services/base_service.dart';
 
 class CustomerRegistrationRepo {
   Map<String, String> get header {

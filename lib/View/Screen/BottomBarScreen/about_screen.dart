@@ -1,9 +1,9 @@
-import 'package:echosphere/View/Constant/app_color.dart';
-import 'package:echosphere/View/Screen/About/Events.dart';
-import 'package:echosphere/View/Screen/About/Executive.dart';
-import 'package:echosphere/View/Screen/About/Updates.dart';
-import 'package:echosphere/View/Screen/About/about_company.dart';
-import 'package:echosphere/View/Screen/About/contact_us.dart';
+import 'package:dw_echosphere_app/View/Constant/app_color.dart';
+import 'package:dw_echosphere_app/View/Screen/About/Events.dart';
+import 'package:dw_echosphere_app/View/Screen/About/Executive.dart';
+import 'package:dw_echosphere_app/View/Screen/About/about_company.dart';
+import 'package:dw_echosphere_app/View/Screen/About/contact_us.dart';
+import 'package:dw_echosphere_app/View/Screen/About/Updates.dart';
 import 'package:flutter/material.dart';
 
 class AboutScreen extends StatelessWidget {

@@ -1,18 +1,17 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
-import 'package:echosphere/Api/ResponseModel/service_response_model.dart';
-import 'package:echosphere/Api/Services/base_service.dart';
-import 'package:echosphere/View/Controller/service_controller.dart';
-import 'package:echosphere/View/Screen/Category/main_cat_screen.dart';
-import 'package:echosphere/View/Screen/Subcategory/sub_cat_screen.dart';
-import 'package:echosphere/View/Constant/app_color.dart';
+import 'package:dw_echosphere_app/Api/ResponseModel/service_response_model.dart';
+import 'package:dw_echosphere_app/Api/Services/base_service.dart';
+import 'package:dw_echosphere_app/View/Controller/service_controller.dart';
+import 'package:dw_echosphere_app/View/Screen/Category/main_cat_screen.dart';
+import 'package:dw_echosphere_app/View/Screen/Subcategory/sub_cat_screen.dart';
+import 'package:dw_echosphere_app/View/Constant/app_color.dart';
 import 'package:flutter/material.dart';
-import 'package:echosphere/View/Widgets/custom_bottom_bar.dart';
-//import 'package:echosphere/View/Screen/BottomBarScreen/service_screen.dart';
-// import 'package:echosphere/View/Screen/BottomBarScreen/service_detail_screen.dart';
-import 'package:echosphere/View/Screen/BottomBarScreen/profile.dart';
-import 'package:echosphere/View/Screen/BottomBarScreen/about_screen.dart';
+import 'package:dw_echosphere_app/View/Widgets/custom_bottom_bar.dart';
+
+import 'package:dw_echosphere_app/View/Screen/BottomBarScreen/profile.dart';
+import 'package:dw_echosphere_app/View/Screen/BottomBarScreen/about_screen.dart';
 import 'package:get/get.dart';
 
 class HomeScreen extends StatefulWidget {

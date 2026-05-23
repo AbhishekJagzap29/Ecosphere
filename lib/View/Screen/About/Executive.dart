@@ -1,7 +1,7 @@
-import 'package:echosphere/View/Controller/executive_auth_controller.dart';
-import 'package:echosphere/View/Constant/app_color.dart';
-import 'package:echosphere/View/Screen/Category/executive_main_cat_screen.dart';
-import 'package:echosphere/View/Utils/app_layout.dart';
+import 'package:dw_echosphere_app/View/Controller/executive_auth_controller.dart';
+import 'package:dw_echosphere_app/View/Constant/app_color.dart';
+import 'package:dw_echosphere_app/View/Screen/Category/executive_main_cat_screen.dart';
+import 'package:dw_echosphere_app/View/Utils/app_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

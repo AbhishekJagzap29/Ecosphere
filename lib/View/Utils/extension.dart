@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:echosphere/View/Constant/app_color.dart';
+import 'package:dw_echosphere_app/View/Constant/app_color.dart';
 
 extension SizedExtension on double {
   Widget addHSpace() {

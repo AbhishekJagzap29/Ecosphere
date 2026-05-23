@@ -1,5 +1,5 @@
-import 'package:echosphere/Api/ResponseModel/taluka_response_model.dart';
-import 'package:echosphere/View/Constant/app_color.dart';
+import 'package:dw_echosphere_app/Api/ResponseModel/taluka_response_model.dart';
+import 'package:dw_echosphere_app/View/Constant/app_color.dart';
 import 'package:flutter/material.dart';
 
 class TalukaSelector extends StatefulWidget {

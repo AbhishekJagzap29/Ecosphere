@@ -1,10 +1,10 @@
-import 'package:echosphere/Api/ResponseModel/service_response_model.dart';
-import 'package:echosphere/View/Constant/app_color.dart';
-import 'package:echosphere/View/Constant/app_string.dart';
-import 'package:echosphere/View/Controller/service_controller.dart';
-import 'package:echosphere/View/Screen/ServiceRequest/create_service_request_screen.dart';
-import 'package:echosphere/View/Screen/Subcategory/sub_cat_screen.dart';
-import 'package:echosphere/View/Widgets/search_filter.dart';
+import 'package:dw_echosphere_app/Api/ResponseModel/service_response_model.dart';
+import 'package:dw_echosphere_app/View/Constant/app_color.dart';
+import 'package:dw_echosphere_app/View/Constant/app_string.dart';
+import 'package:dw_echosphere_app/View/Controller/service_controller.dart';
+import 'package:dw_echosphere_app/View/Screen/ServiceRequest/create_service_request_screen.dart';
+import 'package:dw_echosphere_app/View/Screen/Subcategory/sub_cat_screen.dart';
+import 'package:dw_echosphere_app/View/Widgets/search_filter.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

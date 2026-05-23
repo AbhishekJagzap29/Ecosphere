@@ -1,8 +1,8 @@
 import 'dart:developer';
 
-import 'package:echosphere/Api/Repo/service_detail_repo.dart';
-import 'package:echosphere/Api/ResponseModel/service_detail_response_model.dart';
-import 'package:echosphere/View/Utils/app_layout.dart';
+import 'package:dw_echosphere_app/Api/Repo/service_detail_repo.dart';
+import 'package:dw_echosphere_app/Api/ResponseModel/service_detail_response_model.dart';
+import 'package:dw_echosphere_app/View/Utils/app_layout.dart';
 import 'package:get/get.dart';
 
 class ServiceDetailController extends GetxController {

@@ -1,6 +1,7 @@
-import 'package:echosphere/Api/ResponseModel/taluka_response_model.dart';
-import 'package:echosphere/View/Constant/app_color.dart';
-import 'package:echosphere/View/Controller/taluka_controller.dart';
+import 'package:dw_echosphere_app/Api/ResponseModel/taluka_response_model.dart';
+import 'package:dw_echosphere_app/View/Constant/app_color.dart';
+import 'package:dw_echosphere_app/View/Controller/taluka_controller.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -26,6 +27,24 @@ class TalukaFilterDropdown extends StatelessWidget {
         final hasSelectedTaluka = selectedTalukaId != null &&
             controller.talukas.any((taluka) => taluka.id == selectedTalukaId);
         final selectedValue = hasSelectedTaluka ? selectedTalukaId! : 0;
+        final talukaIds = [
+          0,
+          ...controller.talukas
+              .where((taluka) => taluka.id != null)
+              .map((taluka) => taluka.id!),
+        ];
+
+        String talukaNameFromId(int id) {
+          if (id == 0) return 'All talukas';
+
+          for (final taluka in controller.talukas) {
+            if (taluka.id == id) {
+              return taluka.name ?? 'Unnamed taluka';
+            }
+          }
+
+          return 'Unnamed taluka';
+        }
 
         return Container(
           margin: const EdgeInsets.only(bottom: 12),
@@ -51,59 +70,90 @@ class TalukaFilterDropdown extends StatelessWidget {
               ),
               const SizedBox(width: 12),
               Expanded(
-                child: DropdownButtonHideUnderline(
-                  child: DropdownButton<int>(
-                    value: hasError || isLoading ? null : selectedValue,
-                    isExpanded: true,
-                    dropdownColor: premiumSurfaceTintColor,
-                    iconEnabledColor: goldPrimaryColor,
-                    hint: Text(
-                      hasError
+                child: DropdownSearch<int>(
+                  enabled: !isLoading && !hasError,
+                  selectedItem: hasError || isLoading ? null : selectedValue,
+                  items: talukaIds,
+                  itemAsString: talukaNameFromId,
+                  compareFn: (item, selectedItem) => item == selectedItem,
+                  dropdownButtonProps: const DropdownButtonProps(
+                    icon: Icon(
+                      Icons.keyboard_arrow_down,
+                      color: goldPrimaryColor,
+                    ),
+                  ),
+                  dropdownDecoratorProps: DropDownDecoratorProps(
+                    dropdownSearchDecoration: InputDecoration(
+                      hintText: hasError
                           ? 'Unable to load talukas'
                           : isLoading
                               ? 'Loading talukas...'
                               : 'Select taluka',
-                      style: const TextStyle(
+                      hintStyle: const TextStyle(
                         color: grey400Color,
                         fontSize: 16,
                       ),
+                      border: InputBorder.none,
+                      enabledBorder: InputBorder.none,
+                      focusedBorder: InputBorder.none,
+                      disabledBorder: InputBorder.none,
+                      isDense: true,
+                      contentPadding: const EdgeInsets.symmetric(vertical: 8),
                     ),
-                    style: const TextStyle(
+                    baseStyle: const TextStyle(
                       color: darkTextColor,
                       fontSize: 16,
                     ),
-                    items: [
-                      const DropdownMenuItem<int>(
-                        value: 0,
-                        child: Text('All talukas'),
-                      ),
-                      ...controller.talukas
-                          .where((taluka) => taluka.id != null)
-                          .map(
-                        (taluka) => DropdownMenuItem<int>(
-                          value: taluka.id!,
-                          child: Text(taluka.name ?? 'Unnamed taluka'),
+                  ),
+                  popupProps: PopupProps.menu(
+                    showSearchBox: true,
+                    showSelectedItems: true,
+                    searchDelay: Duration.zero,
+                    menuProps: const MenuProps(
+                      backgroundColor: premiumSurfaceTintColor,
+                    ),
+                    searchFieldProps: const TextFieldProps(
+                      decoration: InputDecoration(
+                        hintText: 'Search taluka',
+                        prefixIcon: Icon(
+                          Icons.search,
+                          color: primaryGreenColor,
+                        ),
+                        filled: true,
+                        fillColor: textFieldColor,
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 12,
                         ),
                       ),
-                    ],
-                    onChanged: isLoading || hasError
-                        ? null
-                        : (value) {
-                            if (value == null || value == 0) {
-                              onChanged(null);
-                              return;
-                            }
-
-                            TalukaData? taluka;
-                            for (final item in controller.talukas) {
-                              if (item.id == value) {
-                                taluka = item;
-                                break;
-                              }
-                            }
-                            onChanged(taluka);
-                          },
+                    ),
+                    itemBuilder: (context, item, isSelected) {
+                      return ListTile(
+                        dense: true,
+                        selected: isSelected,
+                        selectedTileColor: textFieldColor,
+                        title: Text(
+                          talukaNameFromId(item),
+                          style: const TextStyle(color: darkTextColor),
+                        ),
+                      );
+                    },
                   ),
+                  onChanged: (value) {
+                    if (value == null || value == 0) {
+                      onChanged(null);
+                      return;
+                    }
+
+                    TalukaData? taluka;
+                    for (final item in controller.talukas) {
+                      if (item.id == value) {
+                        taluka = item;
+                        break;
+                      }
+                    }
+                    onChanged(taluka);
+                  },
                 ),
               ),
               if (isLoading)

@@ -1,9 +1,9 @@
 import 'dart:developer';
 
-import 'package:echosphere/Api/Repo/executive_auth_repo.dart';
-import 'package:echosphere/Api/ResponseModel/executive_login_response_model.dart';
-import 'package:echosphere/View/Constant/shared_prefs.dart';
-import 'package:echosphere/View/Utils/app_layout.dart';
+import 'package:dw_echosphere_app/Api/Repo/executive_auth_repo.dart';
+import 'package:dw_echosphere_app/Api/ResponseModel/executive_login_response_model.dart';
+import 'package:dw_echosphere_app/View/Constant/shared_prefs.dart';
+import 'package:dw_echosphere_app/View/Utils/app_layout.dart';
 import 'package:get/get.dart';
 
 class ExecutiveAuthController extends GetxController {
