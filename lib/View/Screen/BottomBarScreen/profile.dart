@@ -434,7 +434,7 @@ class _SchemeContentCard extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           const Text(
-            'Only Rs.2500/- for 5 years, for the whole family..!',
+            'Only Rs.3100/- for 5 years, for the whole family..!',
             style: TextStyle(
               color: goldPrimaryColor,
               fontSize: 16,
@@ -673,7 +673,7 @@ class _MarathiSchemeContentCard extends StatelessWidget {
           const SizedBox(height: 26),
 
           const Text(
-            'आम्ही घेऊन येत आहोत  तुमच्यासाठी फक्त ₹2500/- मध्ये 5 वर्षांसाठी संपूर्ण कुटुंबासाठी',
+            'आम्ही घेऊन येत आहोत  तुमच्यासाठी फक्त ₹3100/- मध्ये 5 वर्षांसाठी संपूर्ण कुटुंबासाठी',
             style: TextStyle(
               color: goldPrimaryColor,
               fontSize: 20,
