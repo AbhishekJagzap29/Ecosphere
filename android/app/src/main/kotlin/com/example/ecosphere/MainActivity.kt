@@ -1,4 +1,4 @@
-package com.dw.echosphereApp
+package com.dwecho.sphereApp
 
 import io.flutter.embedding.android.FlutterActivity
 
