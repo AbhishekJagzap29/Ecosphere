@@ -1,15 +1,20 @@
-import 'dart:convert';
 import 'package:dw_echosphere_app/Api/ResponseModel/service_response_model.dart';
 import 'package:dw_echosphere_app/Api/ResponseModel/sub_service_response_model.dart';
+import 'package:dw_echosphere_app/Api/ResponseModel/taluka_response_model.dart';
 import 'package:dw_echosphere_app/View/Constant/app_color.dart';
 import 'package:dw_echosphere_app/View/Controller/create_service_request_controller.dart';
 import 'package:dw_echosphere_app/View/Controller/service_controller.dart';
 import 'package:dw_echosphere_app/View/Controller/sub_service_controller.dart';
-import 'package:dw_echosphere_app/View/Utils/app_layout.dart';
+import 'package:dw_echosphere_app/View/Controller/taluka_controller.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+
+// Spacing constants
+const gap14 = SizedBox(height: 14);
+const gap24 = SizedBox(height: 24);
 
 class CreateServiceRequestScreen extends StatefulWidget {
   const CreateServiceRequestScreen({super.key});
@@ -21,6 +26,8 @@ class CreateServiceRequestScreen extends StatefulWidget {
 
 class _CreateServiceRequestScreenState
     extends State<CreateServiceRequestScreen> {
+  final _formKey = GlobalKey<FormState>();
+
   final CreateServiceRequestController _requestController =
       Get.put(CreateServiceRequestController());
   final ServiceController _serviceController =
@@ -31,331 +38,46 @@ class _CreateServiceRequestScreenState
       Get.isRegistered<SubServiceController>()
           ? Get.find<SubServiceController>()
           : Get.put(SubServiceController());
-
-  final TextEditingController _serviceTextController = TextEditingController();
-  final TextEditingController _subserviceTextController =
-      TextEditingController();
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _ownerIdController = TextEditingController();
-  final TextEditingController _addressController = TextEditingController();
-  final TextEditingController _phoneController = TextEditingController();
-  final TextEditingController _discountController = TextEditingController();
-  final TextEditingController _youtubeLinkController = TextEditingController();
-  final TextEditingController _facebookLinkController = TextEditingController();
-  final TextEditingController _instagramLinkController =
-      TextEditingController();
-  final TextEditingController _facilitiesController = TextEditingController();
-  final FocusNode _serviceFocusNode = FocusNode();
-  final FocusNode _subserviceFocusNode = FocusNode();
-
-  final ImagePicker _imagePicker = ImagePicker();
-  ServiceData? _selectedService;
-  SubServiceData? _selectedSubService;
-  final List<_SelectedGalleryImage> _selectedGalleryImages = [];
+  final TalukaController _talukaController =
+      Get.isRegistered<TalukaController>()
+          ? Get.find<TalukaController>()
+          : Get.put(TalukaController());
 
   @override
   void initState() {
     super.initState();
-    _serviceTextController.addListener(_syncSelectedService);
-    _subserviceTextController.addListener(_syncSelectedSubService);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (_serviceController.services.isEmpty) {
         _serviceController.getServices();
       }
+      if (_talukaController.talukas.isEmpty) {
+        _talukaController.getTalukas();
+      }
     });
   }
 
-  @override
-  void dispose() {
-    _serviceTextController.removeListener(_syncSelectedService);
-    _subserviceTextController.removeListener(_syncSelectedSubService);
-    _serviceTextController.dispose();
-    _subserviceTextController.dispose();
-    _nameController.dispose();
-    _ownerIdController.dispose();
-    _addressController.dispose();
-    _phoneController.dispose();
-    _discountController.dispose();
-    _youtubeLinkController.dispose();
-    _facebookLinkController.dispose();
-    _instagramLinkController.dispose();
-    _facilitiesController.dispose();
-    _serviceFocusNode.dispose();
-    _subserviceFocusNode.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: premiumScaffoldColor,
-      appBar: AppBar(
-        title: const Text('Create Request'),
-        backgroundColor: premiumScaffoldColor,
-        foregroundColor: whiteColor,
-      ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(18, 18, 18, 28),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              GetBuilder<ServiceController>(
-                builder: (controller) {
-                  return _AutocompleteTextField<ServiceData>(
-                    controller: _serviceTextController,
-                    focusNode: _serviceFocusNode,
-                    labelText: 'Service',
-                    icon: Icons.category_outlined,
-                    options: controller.services,
-                    enabled: !controller.isLoading,
-                    displayStringForOption: (service) =>
-                        service.name ?? 'Service ${service.id}',
-                    onSelected: (service) {
-                      final serviceName =
-                          service.name ?? 'Service ${service.id}';
-                      setState(() {
-                        _selectedService = service;
-                        _selectedSubService = null;
-                        _subserviceTextController.clear();
-                      });
-                      _serviceTextController.text = serviceName;
-                      _subServiceController.getSubServices(
-                        serviceId: service.id,
-                      );
-                    },
-                  );
-                },
-              ),
-              const SizedBox(height: 14),
-              GetBuilder<SubServiceController>(
-                builder: (controller) {
-                  return _AutocompleteTextField<SubServiceData>(
-                    controller: _subserviceTextController,
-                    focusNode: _subserviceFocusNode,
-                    labelText: 'Sub Service',
-                    icon: Icons.list_alt_outlined,
-                    options: controller.subServices,
-                    enabled: !controller.isLoading,
-                    displayStringForOption: (subService) =>
-                        subService.name ?? 'Sub Service ${subService.id}',
-                    onSelected: (subService) {
-                      final subServiceName =
-                          subService.name ?? 'Sub Service ${subService.id}';
-                      setState(() {
-                        _selectedSubService = subService;
-                      });
-                      _subserviceTextController.text = subServiceName;
-                    },
-                  );
-                },
-              ),
-              const SizedBox(height: 14),
-              _RequestTextField(
-                controller: _nameController,
-                labelText: 'Name',
-                icon: Icons.person_outline_rounded,
-                textInputAction: TextInputAction.next,
-              ),
-              const SizedBox(height: 14),
-              _RequestTextField(
-                controller: _ownerIdController,
-                labelText: 'Owner',
-                icon: Icons.badge_outlined,
-                keyboardType: TextInputType.text,
-                textInputAction: TextInputAction.next,
-              ),
-              const SizedBox(height: 14),
-              _RequestTextField(
-                controller: _addressController,
-                labelText: 'Address',
-                icon: Icons.location_on_outlined,
-                maxLines: 3,
-              ),
-              const SizedBox(height: 14),
-              _RequestTextField(
-                controller: _phoneController,
-                labelText: 'Phone',
-                icon: Icons.phone_outlined,
-                keyboardType: TextInputType.number,
-                textInputAction: TextInputAction.next,
-                inputFormatters: [
-                  LengthLimitingTextInputFormatter(10),
-                  FilteringTextInputFormatter.digitsOnly,
-                ],
-              ),
-              const SizedBox(height: 14),
-              _RequestTextField(
-                controller: _facilitiesController,
-                labelText: 'Facilities',
-                icon: Icons.check_circle_outline,
-                textInputAction: TextInputAction.next,
-              ),
-              const SizedBox(height: 14),
-              _RequestTextField(
-                controller: _discountController,
-                labelText: 'Discount',
-                icon: Icons.percent_outlined,
-                // keyboardType: TextInputType.number,
-                keyboardType: TextInputType.text,
-                textInputAction: TextInputAction.next,
-              ),
-              const SizedBox(height: 14),
-              _RequestTextField(
-                controller: _youtubeLinkController,
-                labelText: 'YouTube Link',
-                icon: Icons.play_circle_outline,
-                keyboardType: TextInputType.url,
-                textInputAction: TextInputAction.next,
-              ),
-              const SizedBox(height: 14),
-              _RequestTextField(
-                controller: _facebookLinkController,
-                labelText: 'Facebook Link',
-                icon: Icons.facebook,
-                keyboardType: TextInputType.url,
-                textInputAction: TextInputAction.next,
-              ),
-              const SizedBox(height: 14),
-              _RequestTextField(
-                controller: _instagramLinkController,
-                labelText: 'Instagram Link',
-                icon: Icons.camera_alt_outlined,
-                keyboardType: TextInputType.url,
-                textInputAction: TextInputAction.next,
-              ),
-              const SizedBox(height: 14),
-              
-              _ImagePickerField(
-                images: _selectedGalleryImages,
-                onTap: _showImageSourcePicker,
-                onClearImage: _removeSelectedImage,
-                onClearAll: _clearSelectedImages,
-              ),
-              const SizedBox(height: 24),
-              SizedBox(
-                height: 52,
-                child: GetBuilder<CreateServiceRequestController>(
-                  builder: (controller) {
-                    return ElevatedButton(
-                      onPressed: controller.isLoading ? null : _createRequest,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: goldPrimaryColor,
-                        foregroundColor: luxuryBlackColor,
-                        disabledBackgroundColor: premiumBorderColor,
-                        disabledForegroundColor: premiumMutedTextColor,
-                      ),
-                      child: controller.isLoading
-                          ? const SizedBox(
-                              height: 20,
-                              width: 20,
-                              child: CircularProgressIndicator(
-                                color: luxuryBlackColor,
-                                strokeWidth: 2,
-                              ),
-                            )
-                          : const Text(
-                              'Create',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w800,
-                              ),
-                            ),
-                    );
-                  },
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+  String? _validateUrl(String? value, String label) {
+    if (value == null || value.trim().isEmpty) return null;
+    final uri = Uri.tryParse(value.trim());
+    if (uri == null || !uri.isAbsolute) {
+      return 'Enter a valid URL for $label';
+    }
+    return null;
   }
 
   Future<void> _createRequest() async {
     FocusScope.of(context).unfocus();
 
-    final serviceName = _serviceTextController.text.trim();
-    final subserviceName = _subserviceTextController.text.trim();
-    final name = _nameController.text.trim();
-    final ownerId = _ownerIdController.text.trim();
-    final address = _addressController.text.trim();
-    final phone = _phoneController.text.trim();
-
-    if (serviceName.isEmpty) {
-      errorSnackBar('Request Failed', 'Please select or enter service');
+    if (!_formKey.currentState!.validate()) {
       return;
     }
 
-    if (subserviceName.isEmpty) {
-      errorSnackBar('Request Failed', 'Please select or enter sub service');
-      return;
-    }
-
-    if (name.isEmpty) {
-      errorSnackBar('Request Failed', 'Name is required');
-      return;
-    }
-
-    if (ownerId.isEmpty) {
-      errorSnackBar('Request Failed', 'Owner ID is required');
-      return;
-    }
-
-    if (address.isEmpty) {
-      errorSnackBar('Request Failed', 'Address is required');
-      return;
-    }
-
-    if (phone.isEmpty) {
-      errorSnackBar('Request Failed', 'Phone is required');
-      return;
-    }
-
-    final response = await _requestController.createServiceRequest(
-      service: serviceName,
-      subservice: subserviceName,
-      name: name,
-      ownerId: ownerId,
-      address: address,
-      phone: phone,
-      discounts: _parseDiscounts(),
-      youtubeLink: _youtubeLinkController.text,
-      facebookLink: _facebookLinkController.text,
-      instagramLink: _instagramLinkController.text,
-      galleryImages:
-          _selectedGalleryImages.map((image) => image.base64).toList(),
-      facilities: _parseFacilities(),
-    );
+    final response = await _requestController.submitRequest();
 
     if (!mounted) return;
 
     if (response?.isSuccess == true) {
       Navigator.of(context).pop(true);
-    }
-  }
-
-  void _syncSelectedService() {
-    final selectedName = _selectedService?.name?.trim();
-    final currentName = _serviceTextController.text.trim();
-
-    if (_selectedService != null && selectedName != currentName) {
-      setState(() {
-        _selectedService = null;
-        _selectedSubService = null;
-        _subserviceTextController.clear();
-      });
-    }
-  }
-
-  void _syncSelectedSubService() {
-    final selectedName = _selectedSubService?.name?.trim();
-    final currentName = _subserviceTextController.text.trim();
-
-    if (_selectedSubService != null && selectedName != currentName) {
-      setState(() {
-        _selectedSubService = null;
-      });
     }
   }
 
@@ -386,7 +108,7 @@ class _CreateServiceRequestScreenState
                   ),
                   onTap: () {
                     Navigator.of(context).pop();
-                    _pickImage(ImageSource.camera);
+                    _requestController.pickImage(ImageSource.camera);
                   },
                 ),
                 ListTile(
@@ -400,7 +122,7 @@ class _CreateServiceRequestScreenState
                   ),
                   onTap: () {
                     Navigator.of(context).pop();
-                    _pickGalleryImages();
+                    _requestController.pickGalleryImages();
                   },
                 ),
               ],
@@ -411,103 +133,379 @@ class _CreateServiceRequestScreenState
     );
   }
 
-  Future<void> _pickImage(ImageSource source) async {
-    try {
-      final image = await _imagePicker.pickImage(
-        source: source,
-        imageQuality: 75,
-        maxWidth: 1200,
-      );
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: premiumScaffoldColor,
+      appBar: AppBar(
+        title: const Text('Create Request'),
+        backgroundColor: premiumScaffoldColor,
+        foregroundColor: whiteColor,
+      ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(18, 18, 18, 28),
+          child: GetBuilder<CreateServiceRequestController>(
+            builder: (requestCtrl) {
+              return Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    // 1. Service Details Group
+                    const _FormSectionHeader(title: "Service Details"),
+                    
+                    GetBuilder<ServiceController>(
+                      builder: (controller) {
+                        return _AutocompleteTextField<ServiceData>(
+                          controller: requestCtrl.serviceTextController,
+                          focusNode: requestCtrl.serviceFocusNode,
+                          labelText: 'Service',
+                          icon: Icons.category_outlined,
+                          options: controller.services,
+                          enabled: !controller.isLoading,
+                          displayStringForOption: (service) =>
+                              service.name ?? 'Service ${service.id}',
+                          validator: (val) {
+                            if (val == null || val.trim().isEmpty) {
+                              return 'Service selection is required';
+                            }
+                            return null;
+                          },
+                          onSelected: (service) {
+                            requestCtrl.setSelectedService(service);
+                            _subServiceController.getSubServices(
+                              serviceId: service.id,
+                            );
+                          },
+                        );
+                      },
+                    ),
+                    gap14,
+                    GetBuilder<SubServiceController>(
+                      builder: (controller) {
+                        return _AutocompleteTextField<SubServiceData>(
+                          controller: requestCtrl.subserviceTextController,
+                          focusNode: requestCtrl.subserviceFocusNode,
+                          labelText: 'Sub Service',
+                          icon: Icons.list_alt_outlined,
+                          options: controller.subServices,
+                          enabled: !controller.isLoading,
+                          displayStringForOption: (subService) =>
+                              subService.name ?? 'Sub Service ${subService.id}',
+                          validator: (val) {
+                            if (val == null || val.trim().isEmpty) {
+                              return 'Sub Service selection is required';
+                            }
+                            return null;
+                          },
+                          onSelected: (subService) {
+                            requestCtrl.setSelectedSubService(subService);
+                          },
+                        );
+                      },
+                    ),
 
-      if (image == null) return;
+                    // 2. Business Details Group
+                    const _FormSectionHeader(title: "Business Details"),
+                    
+                    _RequestTextField(
+                      controller: requestCtrl.nameController,
+                      labelText: 'Name',
+                      icon: Icons.person_outline_rounded,
+                      textInputAction: TextInputAction.next,
+                      validator: (val) {
+                        if (val == null || val.trim().isEmpty) {
+                          return 'Business name is required';
+                        }
+                        return null;
+                      },
+                    ),
+                    gap14,
+                    _RequestTextField(
+                      controller: requestCtrl.ownerIdController,
+                      labelText: 'Owner',
+                      icon: Icons.badge_outlined,
+                      keyboardType: TextInputType.text,
+                      textInputAction: TextInputAction.next,
+                      validator: (val) {
+                        if (val == null || val.trim().isEmpty) {
+                          return 'Owner is required';
+                        }
+                        return null;
+                      },
+                    ),
+                    gap14,
+                    _RequestTextField(
+                      controller: requestCtrl.phoneController,
+                      labelText: 'Phone',
+                      icon: Icons.phone_outlined,
+                      keyboardType: TextInputType.number,
+                      textInputAction: TextInputAction.next,
+                      inputFormatters: [
+                        LengthLimitingTextInputFormatter(10),
+                        FilteringTextInputFormatter.digitsOnly,
+                      ],
+                      validator: (val) {
+                        if (val == null || val.trim().isEmpty) {
+                          return 'Phone number is required';
+                        }
+                        if (val.trim().length < 10) {
+                          return 'Phone must be exactly 10 digits';
+                        }
+                        return null;
+                      },
+                    ),
+                    gap14,
+                    GetBuilder<TalukaController>(
+                      builder: (controller) {
+                        return DropdownSearch<TalukaData>(
+                          enabled: !controller.isLoading,
+                          selectedItem: requestCtrl.selectedTaluka,
+                          items: controller.talukas,
+                          itemAsString: (taluka) => taluka.name ?? '',
+                          compareFn: (item, selectedItem) => item.id == selectedItem.id,
+                          onChanged: (taluka) {
+                            if (taluka != null) {
+                              requestCtrl.setSelectedTaluka(taluka);
+                            }
+                          },
+                          dropdownButtonProps: const DropdownButtonProps(
+                            icon: Icon(
+                              Icons.keyboard_arrow_down,
+                              color: goldPrimaryColor,
+                            ),
+                          ),
+                          dropdownDecoratorProps: DropDownDecoratorProps(
+                            dropdownSearchDecoration: InputDecoration(
+                              labelText: 'Taluka',
+                              prefixIcon: const Icon(Icons.location_on_outlined, color: goldPrimaryColor),
+                              filled: true,
+                              fillColor: premiumSurfaceTintColor,
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(14),
+                                borderSide: const BorderSide(color: premiumGoldBorderColor),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(14),
+                                borderSide: const BorderSide(color: goldPrimaryColor),
+                              ),
+                              disabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(14),
+                                borderSide: const BorderSide(color: premiumBorderColor),
+                              ),
+                              errorBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(14),
+                                borderSide: const BorderSide(color: Colors.redAccent),
+                              ),
+                              focusedErrorBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(14),
+                                borderSide: const BorderSide(color: Colors.redAccent, width: 1.6),
+                              ),
+                            ),
+                            baseStyle: const TextStyle(
+                              color: premiumTextColor,
+                            ),
+                          ),
+                          popupProps: PopupProps.menu(
+                            showSearchBox: true,
+                            showSelectedItems: true,
+                            searchDelay: Duration.zero,
+                            menuProps: const MenuProps(
+                              backgroundColor: premiumSurfaceTintColor,
+                            ),
+                            searchFieldProps: const TextFieldProps(
+                              style: TextStyle(color: premiumTextColor),
+                              cursorColor: goldPrimaryColor,
+                              decoration: InputDecoration(
+                                hintText: 'Search taluka',
+                                hintStyle: TextStyle(color: premiumMutedTextColor),
+                                prefixIcon: Icon(
+                                  Icons.search,
+                                  color: goldPrimaryColor,
+                                ),
+                                filled: true,
+                                fillColor: premiumSurfaceColor,
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: premiumGoldBorderColor),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: goldPrimaryColor),
+                                ),
+                              ),
+                            ),
+                            itemBuilder: (context, item, isSelected) {
+                              return ListTile(
+                                dense: true,
+                                selected: isSelected,
+                                selectedTileColor: premiumSurfaceColor,
+                                title: Text(
+                                  item.name ?? '',
+                                  style: const TextStyle(color: premiumTextColor),
+                                ),
+                              );
+                            },
+                          ),
+                          validator: (val) {
+                            if (val == null) {
+                              return 'Taluka selection is required';
+                            }
+                            return null;
+                          },
+                        );
+                      },
+                    ),
+                    gap14,
+                    _RequestTextField(
+                      controller: requestCtrl.addressController,
+                      labelText: 'Address',
+                      icon: Icons.location_on_outlined,
+                      maxLines: 3,
+                      validator: (val) {
+                        if (val == null || val.trim().isEmpty) {
+                          return 'Address is required';
+                        }
+                        return null;
+                      },
+                    ),
 
-      final bytes = await image.readAsBytes();
-      if (!mounted) return;
+                    // 3. Offers & Facilities Group
+                    const _FormSectionHeader(title: "Offers & Facilities"),
+                    
+                    _RequestTextField(
+                      controller: requestCtrl.facilitiesController,
+                      labelText: 'Facilities (comma separated)',
+                      icon: Icons.check_circle_outline,
+                      textInputAction: TextInputAction.next,
+                    ),
+                    gap14,
+                    _RequestTextField(
+                      controller: requestCtrl.discountController,
+                      labelText: 'Discount / Offers (comma separated)',
+                      icon: Icons.percent_outlined,
+                      keyboardType: TextInputType.text,
+                      textInputAction: TextInputAction.next,
+                    ),
 
-      setState(() {
-        _selectedGalleryImages.add(
-          _SelectedGalleryImage(
-            bytes: bytes,
-            base64: base64Encode(bytes),
-            name: image.name,
+                    // 4. Social Links Group
+                    const _FormSectionHeader(title: "Social Links"),
+                    
+                    _RequestTextField(
+                      controller: requestCtrl.youtubeLinkController,
+                      labelText: 'YouTube Link',
+                      icon: Icons.play_circle_outline,
+                      keyboardType: TextInputType.url,
+                      textInputAction: TextInputAction.next,
+                      validator: (val) => _validateUrl(val, 'YouTube Link'),
+                    ),
+                    gap14,
+                    _RequestTextField(
+                      controller: requestCtrl.facebookLinkController,
+                      labelText: 'Facebook Link',
+                      icon: Icons.facebook,
+                      keyboardType: TextInputType.url,
+                      textInputAction: TextInputAction.next,
+                      validator: (val) => _validateUrl(val, 'Facebook Link'),
+                    ),
+                    gap14,
+                    _RequestTextField(
+                      controller: requestCtrl.instagramLinkController,
+                      labelText: 'Instagram Link',
+                      icon: Icons.camera_alt_outlined,
+                      keyboardType: TextInputType.url,
+                      textInputAction: TextInputAction.next,
+                      validator: (val) => _validateUrl(val, 'Instagram Link'),
+                    ),
+
+                    // 5. Gallery Group
+                    const _FormSectionHeader(title: "Gallery"),
+                    
+                    _ImagePickerField(
+                      images: requestCtrl.selectedGalleryImages,
+                      onTap: _showImageSourcePicker,
+                      onClearImage: requestCtrl.removeSelectedImage,
+                      onClearAll: requestCtrl.clearSelectedImages,
+                    ),
+                    gap24,
+                    
+                    SizedBox(
+                      height: 52,
+                      child: ElevatedButton(
+                        onPressed: requestCtrl.isLoading ? null : _createRequest,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: goldPrimaryColor,
+                          foregroundColor: luxuryBlackColor,
+                          disabledBackgroundColor: premiumBorderColor,
+                          disabledForegroundColor: premiumMutedTextColor,
+                        ),
+                        child: requestCtrl.isLoading
+                            ? const Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SizedBox(
+                                    height: 20,
+                                    width: 20,
+                                    child: CircularProgressIndicator(
+                                      color: luxuryBlackColor,
+                                      strokeWidth: 2,
+                                    ),
+                                  ),
+                                  SizedBox(width: 12),
+                                  Text(
+                                    'Creating...',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w800,
+                                    ),
+                                  ),
+                                ],
+                              )
+                            : const Text(
+                                'Create Request',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w800,
+                                ),
+                              ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
           ),
-        );
-      });
-    } catch (e) {
-      errorSnackBar('Image Failed', e.toString());
-    }
-  }
-
-  Future<void> _pickGalleryImages() async {
-    try {
-      final images = await _imagePicker.pickMultiImage(
-        imageQuality: 75,
-        maxWidth: 1200,
-      );
-
-      if (images.isEmpty) return;
-
-      final selectedImages = <_SelectedGalleryImage>[];
-      for (final image in images) {
-        final bytes = await image.readAsBytes();
-        selectedImages.add(
-          _SelectedGalleryImage(
-            bytes: bytes,
-            base64: base64Encode(bytes),
-            name: image.name,
-          ),
-        );
-      }
-
-      if (!mounted) return;
-
-      setState(() {
-        _selectedGalleryImages.addAll(selectedImages);
-      });
-    } catch (e) {
-      errorSnackBar('Image Failed', e.toString());
-    }
-  }
-
-  List<String> _parseFacilities() {
-    return _facilitiesController.text
-        .split(',')
-        .map((facility) => facility.trim())
-        .where((facility) => facility.isNotEmpty)
-        .toList();
-  }
-
-  List<String> _parseDiscounts() {
-    return _discountController.text
-        .split(',')
-        .map((discount) => discount.trim())
-        .where((discount) => discount.isNotEmpty)
-        .toList();
-  }
-
-  void _removeSelectedImage(int index) {
-    setState(() {
-      _selectedGalleryImages.removeAt(index);
-    });
-  }
-
-  void _clearSelectedImages() {
-    setState(() {
-      _selectedGalleryImages.clear();
-    });
+        ),
+      ),
+    );
   }
 }
 
-class _SelectedGalleryImage {
-  final Uint8List bytes;
-  final String base64;
-  final String name;
+class _FormSectionHeader extends StatelessWidget {
+  final String title;
+  const _FormSectionHeader({required this.title});
 
-  const _SelectedGalleryImage({
-    required this.bytes,
-    required this.base64,
-    required this.name,
-  });
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 24, bottom: 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title.toUpperCase(),
+            style: const TextStyle(
+              color: goldPrimaryColor,
+              fontSize: 12,
+              fontWeight: FontWeight.w800,
+              letterSpacing: 1.2,
+            ),
+          ),
+          const SizedBox(height: 6),
+          const Divider(color: premiumBorderColor, height: 1),
+        ],
+      ),
+    );
+  }
 }
 
 class _AutocompleteTextField<T extends Object> extends StatelessWidget {
@@ -519,6 +517,7 @@ class _AutocompleteTextField<T extends Object> extends StatelessWidget {
   final bool enabled;
   final String Function(T option) displayStringForOption;
   final ValueChanged<T> onSelected;
+  final FormFieldValidator<String>? validator;
 
   const _AutocompleteTextField({
     required this.controller,
@@ -529,6 +528,7 @@ class _AutocompleteTextField<T extends Object> extends StatelessWidget {
     required this.displayStringForOption,
     required this.onSelected,
     this.enabled = true,
+    this.validator,
   });
 
   @override
@@ -552,13 +552,14 @@ class _AutocompleteTextField<T extends Object> extends StatelessWidget {
         fieldFocusNode,
         onFieldSubmitted,
       ) {
-        return TextField(
+        return TextFormField(
           controller: textEditingController,
           focusNode: fieldFocusNode,
           enabled: enabled,
           textInputAction: TextInputAction.next,
           style: const TextStyle(color: premiumTextColor),
           cursorColor: goldPrimaryColor,
+          validator: validator,
           decoration: InputDecoration(
             labelText: labelText,
             prefixIcon: Icon(icon, color: goldPrimaryColor),
@@ -579,6 +580,14 @@ class _AutocompleteTextField<T extends Object> extends StatelessWidget {
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
               borderSide: const BorderSide(color: goldPrimaryColor),
+            ),
+            errorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(14),
+              borderSide: const BorderSide(color: Colors.redAccent),
+            ),
+            focusedErrorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(14),
+              borderSide: const BorderSide(color: Colors.redAccent, width: 1.6),
             ),
           ),
         );
@@ -623,7 +632,7 @@ class _AutocompleteTextField<T extends Object> extends StatelessWidget {
 }
 
 class _ImagePickerField extends StatelessWidget {
-  final List<_SelectedGalleryImage> images;
+  final List<SelectedGalleryImage> images;
   final VoidCallback onTap;
   final ValueChanged<int> onClearImage;
   final VoidCallback onClearAll;
@@ -638,6 +647,8 @@ class _ImagePickerField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final hasImages = images.isNotEmpty;
+    final isTablet = MediaQuery.of(context).size.width > 600;
+    final thumbSize = isTablet ? 110.0 : 74.0;
 
     return Material(
       color: transparentColor,
@@ -646,7 +657,7 @@ class _ImagePickerField extends StatelessWidget {
         onTap: onTap,
         child: Container(
           constraints: BoxConstraints(
-            minHeight: hasImages ? 150 : 58,
+            minHeight: hasImages ? (thumbSize + 76) : 58,
           ),
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
@@ -699,7 +710,7 @@ class _ImagePickerField extends StatelessWidget {
                     if (hasImages) ...[
                       const SizedBox(height: 12),
                       SizedBox(
-                        height: 74,
+                        height: thumbSize,
                         child: ListView.separated(
                           scrollDirection: Axis.horizontal,
                           itemCount: images.length,
@@ -710,8 +721,8 @@ class _ImagePickerField extends StatelessWidget {
                             return Stack(
                               children: [
                                 Container(
-                                  width: 74,
-                                  height: 74,
+                                  width: thumbSize,
+                                  height: thumbSize,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(10),
                                     border: Border.all(
@@ -784,6 +795,7 @@ class _RequestTextField extends StatelessWidget {
   final TextInputAction? textInputAction;
   final List<TextInputFormatter>? inputFormatters;
   final int maxLines;
+  final FormFieldValidator<String>? validator;
 
   const _RequestTextField({
     required this.controller,
@@ -793,16 +805,18 @@ class _RequestTextField extends StatelessWidget {
     this.textInputAction,
     this.inputFormatters,
     this.maxLines = 1,
+    this.validator,
   });
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
+    return TextFormField(
       controller: controller,
       keyboardType: keyboardType,
       textInputAction: textInputAction,
       inputFormatters: inputFormatters,
       maxLines: maxLines,
+      validator: validator,
       style: const TextStyle(color: premiumTextColor),
       cursorColor: goldPrimaryColor,
       decoration: InputDecoration(
@@ -817,6 +831,14 @@ class _RequestTextField extends StatelessWidget {
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
           borderSide: const BorderSide(color: goldPrimaryColor),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: const BorderSide(color: Colors.redAccent),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: const BorderSide(color: Colors.redAccent, width: 1.6),
         ),
       ),
     );

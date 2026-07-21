@@ -244,14 +244,25 @@ class _AboutTile extends StatelessWidget {
               height: 54,
               width: 54,
               decoration: BoxDecoration(
-                color: greenTintColor,
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: premiumGoldBorderColor),
+                gradient: const LinearGradient(
+                  colors: [goldHighlightColor, goldPrimaryColor],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                borderRadius: BorderRadius.circular(22),
+                border: Border.all(color: premiumGoldBorderColor, width: 1.2),
+                boxShadow: const [
+                  BoxShadow(
+                    color: premiumGoldShadowColor,
+                    blurRadius: 10,
+                    offset: Offset(0, 4),
+                  ),
+                ],
               ),
               child: Icon(
                 icon,
                 size: 27,
-                color: goldPrimaryColor,
+                color: black87Color,
               ),
             ),
             const SizedBox(width: 14),

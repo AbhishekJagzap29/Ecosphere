@@ -96,7 +96,9 @@ class _SubServiceScreenState extends State<SubServiceScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: premiumScaffoldColor,
       appBar: AppBar(
+        toolbarHeight: 52,
         title: Text(widget.serviceName ?? AppString.subServices),
         flexibleSpace: Container(
           decoration: const BoxDecoration(
@@ -108,72 +110,126 @@ class _SubServiceScreenState extends State<SubServiceScreen> {
           ),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 18, 16, 0),
-        child: Column(
-          children: [
-            TalukaFilterDropdown(
-              selectedTalukaId: _selectedTalukaId,
-              onChanged: _onTalukaChanged,
-              onRetry: talukaController.getTalukas,
-            ),
-            const SizedBox(height: 20),
-            Expanded(
-              child: GetBuilder<SubServiceController>(
-                builder: (controller) {
-                  final subServices = _subServicesForRender(
-                    controller,
-                  );
+      body: Stack(
+        children: [
+          const _SubServiceBackgroundGlow(),
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        widget.serviceName ?? "Sub Categories",
+                        style: const TextStyle(
+                          color: goldPrimaryColor,
+                          fontSize: 22,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: -0.5,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      const Text(
+                        "Choose a Sub Category",
+                        style: TextStyle(
+                          color: premiumMutedTextColor,
+                          fontSize: 13,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                    ],
+                  ),
+                  TalukaFilterDropdown(
+                    selectedTalukaId: _selectedTalukaId,
+                    onChanged: _onTalukaChanged,
+                    onRetry: talukaController.getTalukas,
+                  ),
+                  const SizedBox(height: 2),
+                  Expanded(
+                    child: GetBuilder<SubServiceController>(
+                      builder: (controller) {
+                        final subServices = _subServicesForRender(
+                          controller,
+                        );
 
-                  if (controller.isLoading && subServices.isEmpty) {
-                    return const _SubServiceSkeletonList();
-                  }
+                        if (controller.isLoading && subServices.isEmpty) {
+                          return const _SubServiceSkeletonList();
+                        }
 
-                  if (subServices.isEmpty) {
-                    return _SubServiceEmptyState(
-                      searchQuery: '',
-                      onRefresh: _refreshSubServices,
-                      onRetry: _refreshSubServices,
-                    );
-                  }
+                        if (subServices.isEmpty) {
+                          return _SubServiceEmptyState(
+                            searchQuery: '',
+                            onRefresh: _refreshSubServices,
+                            onRetry: _refreshSubServices,
+                          );
+                        }
 
-                  return RefreshIndicator(
-                    onRefresh: _refreshSubServices,
-                    child: ListView.separated(
-                      physics: const AlwaysScrollableScrollPhysics(),
-                      itemCount: subServices.length,
-                      separatorBuilder: (_, __) => const SizedBox(height: 12),
-                      itemBuilder: (context, index) {
-                        final subService = subServices[index];
-                        final subServiceName =
-                            subService.name ?? 'Unnamed sub service';
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(top: 2, bottom: 6),
+                              child: Row(
+                                children: [
+                                  Text(
+                                    "${subServices.length} Sub Categories",
+                                    style: const TextStyle(
+                                      color: goldPrimaryColor,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 13,
+                                      letterSpacing: 0.3,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Expanded(
+                              child: RefreshIndicator(
+                                onRefresh: _refreshSubServices,
+                                child: ListView.separated(
+                                  physics: const AlwaysScrollableScrollPhysics(),
+                                  itemCount: subServices.length,
+                                  separatorBuilder: (_, __) => const SizedBox(height: 8),
+                                  itemBuilder: (context, index) {
+                                    final subService = subServices[index];
+                                    final subServiceName =
+                                        subService.name ?? 'Unnamed sub service';
 
-                        return _SubServiceTile(
-                          subService: subService,
-                          subServiceName: subServiceName,
-                          talukaId: _selectedTalukaId,
-                          talukaName: _selectedTalukaName,
+                                    return _SubServiceCard(
+                                      subService: subService,
+                                      subServiceName: subServiceName,
+                                      talukaId: _selectedTalukaId,
+                                      talukaName: _selectedTalukaName,
+                                    );
+                                  },
+                                ),
+                              ),
+                            ),
+                          ],
                         );
                       },
                     ),
-                  );
-                },
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 }
 
-class _SubServiceTile extends StatelessWidget {
+class _SubServiceCard extends StatefulWidget {
   final SubServiceData subService;
   final String subServiceName;
   final int? talukaId;
   final String? talukaName;
 
-  const _SubServiceTile({
+  const _SubServiceCard({
     required this.subService,
     required this.subServiceName,
     required this.talukaId,
@@ -181,83 +237,154 @@ class _SubServiceTile extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    final colors = _avatarColors(subServiceName);
+  State<_SubServiceCard> createState() => _SubServiceCardState();
+}
 
-    return Material(
-      color: transparentColor,
-      child: Container(
-        decoration: BoxDecoration(
-          color: premiumSurfaceColor,
-          borderRadius: BorderRadius.circular(18),
-          border: Border.all(color: premiumGoldBorderColor),
-          boxShadow: const [
-            BoxShadow(
-              color: premiumShadowColor,
-              blurRadius: 18,
-              offset: Offset(0, 8),
+class _SubServiceCardState extends State<_SubServiceCard> {
+  bool _isPressed = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final serviceInitial = _initialFor(widget.subServiceName);
+    final colors = _avatarColors(widget.subServiceName);
+
+    return AnimatedScale(
+      scale: _isPressed ? 0.97 : 1.0,
+      duration: const Duration(milliseconds: 100),
+      child: GestureDetector(
+        onTapDown: (_) => setState(() => _isPressed = true),
+        onTapUp: (_) => setState(() => _isPressed = false),
+        onTapCancel: () => setState(() => _isPressed = false),
+        onTap: () {
+          Get.to(
+            () => ServiceDetailScreen(
+              subserviceId: widget.subService.id,
+              subserviceName: widget.subServiceName,
+              talukaId: widget.talukaId,
+              talukaName: widget.talukaName,
             ),
-          ],
-        ),
-        child: ListTile(
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 10,
-          ),
-          shape: RoundedRectangleBorder(
+          );
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            color: premiumSurfaceColor,
             borderRadius: BorderRadius.circular(18),
-          ),
-          onTap: () {
-            Get.to(
-              () => ServiceDetailScreen(
-                subserviceId: subService.id,
-                subserviceName: subServiceName,
-                talukaId: talukaId,
-                talukaName: talukaName,
+            border: Border.all(color: premiumGoldBorderColor),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(.30),
+                blurRadius: 20,
+                offset: const Offset(0, 8),
               ),
-            );
-          },
-          leading: Hero(
-            tag: 'sub-service-${subService.id ?? subService.hashCode}',
-            child: CircleAvatar(
-              radius: 23,
-              backgroundColor: colors.background,
-              child: Text(
-                _initialFor(subServiceName),
-                style: TextStyle(
-                  color: colors.foreground,
-                  fontWeight: FontWeight.w800,
-                ),
+              BoxShadow(
+                color: goldPrimaryColor.withOpacity(.06),
+                blurRadius: 25,
               ),
-            ),
+            ],
           ),
-          title: Text(
-            subServiceName,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
-              color: premiumTextColor,
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-          subtitle: subService.description == null ||
-                  subService.description!.trim().isEmpty
-              ? null
-              : Padding(
-                  padding: const EdgeInsets.only(top: 6),
-                  child: Text(
-                    subService.description!,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      color: premiumMutedTextColor,
-                      height: 1.3,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(17),
+            child: Stack(
+              children: [
+                Positioned(
+                  top: 0,
+                  left: 0,
+                  child: Container(
+                    height: 5,
+                    width: 50,
+                    decoration: const BoxDecoration(
+                      color: goldPrimaryColor,
+                      borderRadius: BorderRadius.only(
+                        bottomRight: Radius.circular(8),
+                      ),
                     ),
                   ),
                 ),
-          trailing: const Icon(
-            Icons.chevron_right,
-            color: premiumMutedTextColor,
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(14, 15, 14, 13),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 42,
+                        height: 42,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          gradient: LinearGradient(
+                            colors: [
+                              colors.background,
+                              colors.background.withOpacity(0.8),
+                            ],
+                          ),
+                          border: Border.all(
+                            color: premiumGoldBorderColor.withOpacity(0.5),
+                          ),
+                        ),
+                        child: Center(
+                          child: Text(
+                            serviceInitial,
+                            style: TextStyle(
+                              color: colors.foreground,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w900,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              widget.subServiceName,
+                              style: const TextStyle(
+                                color: premiumTextColor,
+                                fontWeight: FontWeight.w800,
+                                fontSize: 14.5,
+                              ),
+                            ),
+                            if (widget.subService.description != null &&
+                                widget.subService.description!.trim().isNotEmpty) ...[
+                              const SizedBox(height: 4),
+                              Text(
+                                widget.subService.description!,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  color: premiumMutedTextColor,
+                                  fontSize: 12.5,
+                                  height: 1.2,
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      const Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            "View",
+                            style: TextStyle(
+                              color: goldPrimaryColor,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                            ),
+                          ),
+                          SizedBox(width: 2),
+                          Icon(
+                            Icons.arrow_forward_rounded,
+                            color: goldPrimaryColor,
+                            size: 13,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -279,6 +406,50 @@ class _SubServiceTile extends StatelessWidget {
     ];
 
     return palette[value.hashCode.abs() % palette.length];
+  }
+}
+
+class _SubServiceBackgroundGlow extends StatelessWidget {
+  const _SubServiceBackgroundGlow();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Stack(
+      children: [
+        Positioned(
+          top: 42,
+          right: -72,
+          child: _SubServiceGlowSpot(size: 190, opacity: 0.08),
+        ),
+        Positioned(
+          bottom: 84,
+          left: -88,
+          child: _SubServiceGlowSpot(size: 220, opacity: 0.06),
+        ),
+      ],
+    );
+  }
+}
+
+class _SubServiceGlowSpot extends StatelessWidget {
+  final double size;
+  final double opacity;
+
+  const _SubServiceGlowSpot({
+    required this.size,
+    required this.opacity,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: size,
+      width: size,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: goldPrimaryColor.withOpacity(opacity),
+      ),
+    );
   }
 }
 

@@ -47,19 +47,15 @@ class TalukaFilterDropdown extends StatelessWidget {
         }
 
         return Container(
+          height: 56,
           margin: const EdgeInsets.only(bottom: 12),
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+          padding: const EdgeInsets.symmetric(horizontal: 18),
           decoration: BoxDecoration(
-            color: premiumSurfaceTintColor,
+            color: premiumSurfaceColor,
             borderRadius: BorderRadius.circular(18),
-            border: Border.all(color: premiumGoldBorderColor),
-            boxShadow: const [
-              BoxShadow(
-                color: premiumShadowColor,
-                offset: Offset(0, 8),
-                blurRadius: 20,
-              ),
-            ],
+            border: Border.all(
+              color: premiumGoldBorderColor.withOpacity(0.35),
+            ),
           ),
           child: Row(
             children: [

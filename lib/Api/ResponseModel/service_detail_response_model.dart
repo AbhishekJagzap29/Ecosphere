@@ -79,6 +79,10 @@ class ServiceDetailData {
   });
 
   factory ServiceDetailData.fromJson(Map<String, dynamic> json) {
+    final imageList = _readStringList(json['image']);
+    final galleryImageList = _readStringList(json['gallery_images']);
+    final images = galleryImageList.isNotEmpty ? galleryImageList : imageList;
+
     return ServiceDetailData(
       id: _readInt(json['id']),
       name: _readString(json['name']),
@@ -91,8 +95,8 @@ class ServiceDetailData {
       subserviceName: _readString(json['subservice_name']),
       talukaId: _readInt(json['taluka_id']),
       talukaName: _readString(json['taluka_name']),
-      image: _readString(json['image']),
-      galleryImages: _readStringList(json['gallery_images']),
+      image: imageList.isNotEmpty ? imageList.first : null,
+      galleryImages: images,
       facilities: _readStringList(json['facilities']),
       youtubeLink: _readString(json['youtube_link']),
       facebookLink: _readString(json['facebook_link']),
@@ -139,6 +143,11 @@ class ServiceDetailData {
   }
 
   static List<String> _readStringList(dynamic value) {
+    if (value is String || value is num) {
+      final item = _readString(value);
+      return item == null ? [] : [item];
+    }
+
     if (value is! List) return [];
 
     return value

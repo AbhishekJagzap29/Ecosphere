@@ -10,9 +10,10 @@ import 'package:dw_echosphere_app/View/Constant/app_color.dart';
 import 'package:flutter/material.dart';
 import 'package:dw_echosphere_app/View/Widgets/custom_bottom_bar.dart';
 
-import 'package:dw_echosphere_app/View/Screen/BottomBarScreen/profile.dart';
+import 'package:dw_echosphere_app/View/Screen/BottomBarScreen/plans.dart';
 import 'package:dw_echosphere_app/View/Screen/BottomBarScreen/about_screen.dart';
 import 'package:get/get.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -27,7 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final List<Widget> _screens = const [
     HomeTab(),
     ServiceScreen(),
-    ProfileScreen(),
+    PlansScreen(),
     AboutScreen(),
   ];
 
@@ -57,7 +58,10 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
-      body: _screens[_selectedIndex],
+      body: IndexedStack(
+        index: _selectedIndex,
+        children: _screens,
+      ),
       bottomNavigationBar: CustomBottomBar(
         selectedIndex: _selectedIndex,
         onItemTapped: _onItemTapped,
@@ -73,7 +77,9 @@ class HomeTab extends StatefulWidget {
   State<HomeTab> createState() => _HomeTabState();
 }
 
-class _HomeTabState extends State<HomeTab> {
+class _HomeTabState extends State<HomeTab> with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
   late final PageController _pageController;
   late final ServiceController _serviceController;
   int _currentPage = 0;
@@ -120,8 +126,11 @@ class _HomeTabState extends State<HomeTab> {
     _serviceController = Get.isRegistered<ServiceController>()
         ? Get.find<ServiceController>()
         : Get.put(ServiceController());
-    _pageController = PageController(viewportFraction: 0.85);
-    fetchCategories();
+    _pageController = PageController(viewportFraction: 1.0);
+    if (_serviceController.popularServices.isEmpty &&
+        _serviceController.exploreServices.isEmpty) {
+      fetchCategories();
+    }
     _startAutoSlide();
   }
 
@@ -151,6 +160,7 @@ class _HomeTabState extends State<HomeTab> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return GetBuilder<ServiceController>(
       builder: (controller) {
         popularCategories = _buildHomeCategories(controller.popularServices);
@@ -223,28 +233,49 @@ class _HomeTabState extends State<HomeTab> {
                       child: PageView.builder(
                         controller: _pageController,
                         itemCount: sliderCategories.length,
+                        onPageChanged: (index) {
+                          setState(() {
+                            _currentPage = index;
+                          });
+                        },
                         itemBuilder: (context, index) {
                           final category = sliderCategories[index];
 
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8),
-                            child: GestureDetector(
-                              onTap: () => _openService(context, category),
-                              child: _HomeCategoryCard(
-                                category: category,
-                                borderRadius: 20,
-                                titleStyle: const TextStyle(
-                                  color: whiteColor,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                titleBottom: 20,
-                                titleLeft: 20,
+                          return GestureDetector(
+                            onTap: () => _openService(context, category),
+                            child: _HomeCategoryCard(
+                              category: category,
+                              borderRadius: 20,
+                              titleStyle: const TextStyle(
+                                color: whiteColor,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
                               ),
+                              titleBottom: 20,
+                              titleLeft: 20,
                             ),
                           );
                         },
                       ),
+                    ),
+                    const SizedBox(height: 12),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: List.generate(sliderCategories.length, (index) {
+                        final isSelected = index == _currentPage;
+                        return AnimatedContainer(
+                          duration: const Duration(milliseconds: 260),
+                          margin: const EdgeInsets.symmetric(horizontal: 4),
+                          width: isSelected ? 18 : 6,
+                          height: 6,
+                          decoration: BoxDecoration(
+                            color: isSelected
+                                ? goldPrimaryColor
+                                : Colors.white.withOpacity(0.35),
+                            borderRadius: BorderRadius.circular(99),
+                          ),
+                        );
+                      }),
                     ),
                     const SizedBox(height: 28),
                   ],
@@ -446,6 +477,7 @@ class _HomeCategoryImage extends StatelessWidget {
   const _HomeCategoryImage({
     required this.image,
   });
+
 
   @override
   Widget build(BuildContext context) {

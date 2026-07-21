@@ -4,6 +4,7 @@ import 'package:dw_echosphere_app/View/Screen/AuthScreen/splash_screen.dart';
 import 'package:dw_echosphere_app/View/Utils/app_routes.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:upgrader/upgrader.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,7 +24,7 @@ class MyApp extends StatelessWidget {
           data: MediaQuery.of(context).copyWith(
             textScaler: const TextScaler.linear(1.0),
           ),
-          child: child!,
+          child: UpgradeAlert(child: child!),
         );
       },
       theme: ThemeData(

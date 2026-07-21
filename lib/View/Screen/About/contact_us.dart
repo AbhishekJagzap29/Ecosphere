@@ -12,14 +12,8 @@ class ContactUsScreen extends StatelessWidget {
 
   static const List<_BranchAddress> _addresses = [
     _BranchAddress(
-      title: 'Sub Branch',
       address:
           'Shop No.26, Sai Kuber Complex, Sai Kuber City, Yeola Road, Kopargaon (Ahilyanagar)',
-    ),
-    _BranchAddress(
-      title: 'Main Branch',
-      address:
-          'Flat No.09, Narayan Deep, Housing Society Ltd., Anand Nagar, Devlali, Nashik-422401',
     ),
   ];
 
@@ -29,15 +23,22 @@ class ContactUsScreen extends StatelessWidget {
       backgroundColor: premiumScaffoldColor,
       appBar: AppBar(
         toolbarHeight: 72,
-        title: const Column(
+        title: Column(
           children: [
-            Text('Contact Us'),
-            SizedBox(height: 3),
+            const Text(
+              'Contact Us',
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.w800,
+                color: whiteColor,
+              ),
+            ),
+            const SizedBox(height: 3),
             Text(
               'ECHOSPHERE MULTI SERVICES PVT. LTD.',
               style: TextStyle(
-                color: premiumMutedTextColor,
-                fontSize: 10.8,
+                color: whiteColor.withOpacity(0.85),
+                fontSize: 12.5,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -47,57 +48,88 @@ class ContactUsScreen extends StatelessWidget {
       body: Stack(
         children: [
           const _BackgroundGlow(),
-          SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(18, 20, 18, 28),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const _CompanyCard(),
-                const SizedBox(height: 18),
-                _ContactActionTile(
-                  icon: Icons.email_outlined,
-                  title: 'Email',
-                  value: _email,
-                  onTap: () => _launchEmail(_email),
+          TweenAnimationBuilder<double>(
+            tween: Tween<double>(begin: 0.0, end: 1.0),
+            duration: const Duration(milliseconds: 800),
+            curve: Curves.easeOutCubic,
+            builder: (context, value, child) {
+              return Opacity(
+                opacity: value,
+                child: Transform.translate(
+                  offset: Offset(0, 20 * (1.0 - value)),
+                  child: child,
                 ),
-                _ContactActionTile(
-                  icon: Icons.call_outlined,
-                  title: 'Telephone No.',
-                  value: _officePhone,
-                  onTap: () => _launchPhone(_officePhone),
-                ),
-                _ContactActionTile(
-                  icon: Icons.phone_android_rounded,
-                  title: 'Phone No.',
-                  value: _officePhone,
-                  onTap: () => _launchPhone(_officePhone),
-                ),
-                _ContactActionTile(
-                  icon: Icons.chat_outlined,
-                  title: 'WhatsApp No.',
-                  value: _whatsapp,
-                  onTap: () => _launchWhatsApp(_whatsapp),
-                ),
-                _ContactActionTile(
-                  icon: Icons.language_rounded,
-                  title: 'Website',
-                  value: _website.isEmpty ? 'Not available' : _website,
-                  isEnabled: _website.isNotEmpty,
-                  onTap:
-                      _website.isEmpty ? null : () => _launchWebsite(_website),
-                ),
-                const SizedBox(height: 8),
-                const _SectionTitle(title: 'Office Address'),
-                const SizedBox(height: 12),
-                ..._addresses.map(
-                  (branch) => _ContactActionTile(
-                    icon: Icons.location_on_outlined,
-                    title: branch.title,
-                    value: branch.address,
-                    onTap: () => _launchMap(branch.address),
+              );
+            },
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(18, 20, 18, 28),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const _CompanyCard(),
+                  const SizedBox(height: 18),
+                  _ContactActionTile(
+                    icon: Icons.email_outlined,
+                    title: 'Email',
+                    value: _email,
+                    tintColor: Colors.blue.withOpacity(0.15),
+                    onTap: () => _launchEmail(_email),
                   ),
-                ),
-              ],
+                  _ContactActionTile(
+                    icon: Icons.call_outlined,
+                    title: 'Telephone No.',
+                    value: _officePhone,
+                    tintColor: Colors.green.withOpacity(0.15),
+                    onTap: () => _launchPhone(_officePhone),
+                  ),
+                  _ContactActionTile(
+                    icon: Icons.phone_android_rounded,
+                    title: 'Phone No.',
+                    value: _officePhone,
+                    tintColor: Colors.green.withOpacity(0.15),
+                    onTap: () => _launchPhone(_officePhone),
+                  ),
+                  _ContactActionTile(
+                    icon: Icons.chat_outlined,
+                    title: 'WhatsApp No.',
+                    value: _whatsapp,
+                    tintColor: const Color(0xFF25D366).withOpacity(0.15),
+                    onTap: () => _launchWhatsApp(_whatsapp),
+                  ),
+                  _ContactActionTile(
+                    icon: Icons.language_rounded,
+                    title: 'Website',
+                    value: _website.isEmpty ? 'Coming Soon' : _website,
+                    isEnabled: _website.isNotEmpty,
+                    tintColor: Colors.amber.withOpacity(0.15),
+                    onTap:
+                        _website.isEmpty ? null : () => _launchWebsite(_website),
+                  ),
+                  const SizedBox(height: 8),
+                  const _SectionTitle(title: 'Business Hours'),
+                  const SizedBox(height: 12),
+                  _ContactActionTile(
+                    icon: Icons.access_time_rounded,
+                    title: '',
+                    value: 'Monday–Saturday\n9:00 AM – 6:00 PM',
+                    isEnabled: true,
+                    tintColor: Colors.purple.withOpacity(0.15),
+                    onTap: null,
+                  ),
+                  const SizedBox(height: 8),
+                  const _SectionTitle(title: '📍 Office Address'),
+                  const SizedBox(height: 12),
+                  ..._addresses.map(
+                    (branch) => _ContactActionTile(
+                      icon: Icons.location_on_outlined,
+                      title: '',
+                      value: branch.address,
+                      tintColor: Colors.red.withOpacity(0.15),
+                      onTap: () => _launchMap(branch.address),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ],
@@ -164,11 +196,9 @@ class ContactUsScreen extends StatelessWidget {
 }
 
 class _BranchAddress {
-  final String title;
   final String address;
 
   const _BranchAddress({
-    required this.title,
     required this.address,
   });
 }
@@ -264,7 +294,7 @@ class _CompanyCard extends StatelessWidget {
                 FittedBox(
                   fit: BoxFit.scaleDown,
                   alignment: Alignment.centerLeft,
-                  child: const Text(
+                  child: Text(
                     'CIN - U73200MH2024PTC435914',
                     style: TextStyle(
                       color: premiumMutedTextColor,
@@ -300,12 +330,13 @@ class _SectionTitle extends StatelessWidget {
   }
 }
 
-class _ContactActionTile extends StatelessWidget {
+class _ContactActionTile extends StatefulWidget {
   final IconData icon;
   final String title;
   final String value;
   final VoidCallback? onTap;
   final bool isEnabled;
+  final Color? tintColor;
 
   const _ContactActionTile({
     required this.icon,
@@ -313,99 +344,145 @@ class _ContactActionTile extends StatelessWidget {
     required this.value,
     required this.onTap,
     this.isEnabled = true,
+    this.tintColor,
   });
+
+  @override
+  State<_ContactActionTile> createState() => _ContactActionTileState();
+}
+
+class _ContactActionTileState extends State<_ContactActionTile> {
+  double _scale = 1.0;
 
   @override
   Widget build(BuildContext context) {
     final effectiveTextColor =
-        isEnabled ? premiumTextColor : premiumMutedTextColor;
+        widget.isEnabled ? premiumTextColor : premiumMutedTextColor;
 
-    return InkWell(
-      onTap: isEnabled ? onTap : null,
-      borderRadius: BorderRadius.circular(18),
-      child: Container(
-        width: double.infinity,
-        margin: const EdgeInsets.only(bottom: 14),
-        padding: const EdgeInsets.all(15),
-        decoration: BoxDecoration(
-          color: premiumSurfaceColor,
-          borderRadius: BorderRadius.circular(18),
-          border: Border.all(color: premiumGoldBorderColor),
-          boxShadow: const [
-            BoxShadow(
-              color: premiumShadowColor,
-              blurRadius: 18,
-              offset: Offset(0, 8),
-            ),
-          ],
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              height: 46,
-              width: 46,
-              decoration: BoxDecoration(
-                color: greenTintColor,
-                borderRadius: BorderRadius.circular(14),
-                border: Border.all(color: premiumGoldBorderColor),
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 14),
+      child: AnimatedScale(
+        scale: _scale,
+        duration: const Duration(milliseconds: 150),
+        curve: Curves.easeInOut,
+        child: Ink(
+          decoration: BoxDecoration(
+            color: premiumSurfaceColor,
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(color: premiumGoldBorderColor),
+            boxShadow: const [
+              BoxShadow(
+                color: premiumShadowColor,
+                blurRadius: 18,
+                offset: Offset(0, 8),
               ),
-              child: Icon(
-                icon,
-                color: isEnabled ? goldPrimaryColor : premiumMutedTextColor,
-                size: 24,
-              ),
-            ),
-            const SizedBox(width: 13),
-            Expanded(
-              child: Column(
+            ],
+          ),
+          child: InkWell(
+            onTap: widget.isEnabled && widget.onTap != null
+                ? () {
+                    setState(() => _scale = 1.0);
+                    widget.onTap!();
+                  }
+                : null,
+            onTapDown: widget.isEnabled && widget.onTap != null
+                ? (_) => setState(() => _scale = 0.97)
+                : null,
+            onTapCancel: widget.isEnabled && widget.onTap != null
+                ? () => setState(() => _scale = 1.0)
+                : null,
+            borderRadius: BorderRadius.circular(18),
+            splashColor: goldPrimaryColor.withOpacity(0.12),
+            highlightColor: goldPrimaryColor.withOpacity(0.06),
+            child: Padding(
+              padding: const EdgeInsets.all(15),
+              child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    title,
-                    style: const TextStyle(
-                      color: premiumMutedTextColor,
-                      fontSize: 12.2,
-                      fontWeight: FontWeight.w700,
+                  Container(
+                    height: 46,
+                    width: 46,
+                    decoration: BoxDecoration(
+                      color: widget.tintColor ?? greenTintColor,
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(color: premiumGoldBorderColor),
+                    ),
+                    child: Icon(
+                      widget.icon,
+                      color: widget.isEnabled ? goldPrimaryColor : premiumMutedTextColor,
+                      size: 24,
                     ),
                   ),
-                  const SizedBox(height: 6),
-                  title == 'Email'
-                      ? FittedBox(
-                          fit: BoxFit.scaleDown,
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            value,
-                            maxLines: 1,
-                            style: TextStyle(
-                              color: effectiveTextColor,
-                              fontSize: 14.6,
+                  const SizedBox(width: 13),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (widget.title.isNotEmpty) ...[
+                          Text(
+                            widget.title,
+                            style: const TextStyle(
+                              color: premiumMutedTextColor,
+                              fontSize: 12.2,
                               fontWeight: FontWeight.w700,
                             ),
                           ),
-                        )
-                      : Text(
-                          value,
-                          softWrap: true,
-                          style: TextStyle(
-                            color: effectiveTextColor,
-                            fontSize: 14.6,
-                            height: 1.5,
-                            fontWeight: FontWeight.w700,
+                          const SizedBox(height: 6),
+                        ],
+                        widget.title == 'Email'
+                            ? FittedBox(
+                                fit: BoxFit.scaleDown,
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  widget.value,
+                                  maxLines: 1,
+                                  style: TextStyle(
+                                    color: effectiveTextColor,
+                                    fontSize: 14.6,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                              )
+                            : Text(
+                                widget.value,
+                                softWrap: true,
+                                style: TextStyle(
+                                  color: effectiveTextColor,
+                                  fontSize: 14.6,
+                                  height: 1.5,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                      ],
+                    ),
+                  ),
+                  if (widget.isEnabled && widget.onTap != null) ...[
+                    const SizedBox(width: 10),
+                    Align(
+                      alignment: Alignment.center,
+                      child: Container(
+                        height: 28,
+                        width: 28,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: goldPrimaryColor.withOpacity(0.12),
+                          border: Border.all(
+                            color: premiumGoldBorderColor,
+                            width: 1,
                           ),
                         ),
+                        child: const Icon(
+                          Icons.arrow_forward_ios_rounded,
+                          color: goldPrimaryColor,
+                          size: 12,
+                        ),
+                      ),
+                    ),
+                  ],
                 ],
               ),
             ),
-            if (isEnabled) ...[
-              const SizedBox(width: 10),
-              const Icon(
-                Icons.open_in_new_rounded,
-                color: goldPrimaryColor,
-                size: 19,
-              ),
-            ],
-          ],
+          ),
         ),
       ),
     );
@@ -417,7 +494,7 @@ class _BackgroundGlow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
+    return const Stack(
       children: [
         Positioned(
           top: 36,

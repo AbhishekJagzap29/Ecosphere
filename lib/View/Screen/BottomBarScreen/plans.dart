@@ -2,14 +2,14 @@ import 'package:dw_echosphere_app/View/Constant/app_color.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
-class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({super.key});
+class PlansScreen extends StatefulWidget {
+  const PlansScreen({super.key});
 
   @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
+  State<PlansScreen> createState() => _PlansScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
+class _PlansScreenState extends State<PlansScreen> {
   final PageController _controller = PageController(viewportFraction: 0.94);
   int _currentPage = 0;
 
@@ -26,6 +26,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
   ];
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    precacheImage(
+      const AssetImage('assets/images/Front.png'),
+      context,
+    );
+
+    precacheImage(
+      const AssetImage('assets/images/Back.png'),
+      context,
+    );
+  }
+
+  @override
   void dispose() {
     _controller.dispose();
     super.dispose();
@@ -37,7 +52,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       backgroundColor: premiumScaffoldColor,
       body: Stack(
         children: [
-          const _ProfileBackgroundGlow(),
+          const _PlansBackgroundGlow(),
           Column(
             children: [
               Expanded(
@@ -48,7 +63,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     setState(() => _currentPage = index);
                   },
                   itemBuilder: (context, index) {
-                    return _ProfilePageFrame(
+                    return _PlansPageFrame(
                       isActive: _currentPage == index,
                       child: _pages[index],
                     );
@@ -76,11 +91,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 }
 
-class _ProfilePageFrame extends StatelessWidget {
+class _PlansPageFrame extends StatelessWidget {
   final Widget child;
   final bool isActive;
 
-  const _ProfilePageFrame({
+  const _PlansPageFrame({
     required this.child,
     required this.isActive,
   });
@@ -132,41 +147,12 @@ class _AdventurePassCardPage extends StatelessWidget {
       child: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
         child: Padding(
-          // padding: const EdgeInsets.all(24),
-          padding: const EdgeInsets.symmetric(
+        padding: const EdgeInsets.symmetric(
   horizontal: 18,
   vertical: 20,
 ),
           child: Column(
             children: [
-              // TOP TITLE
-              // Row(
-              //   children: [
-              //     Expanded(
-              //       child: Container(
-              //         height: 2,
-              //         color: const Color(0xFFD4A017),
-              //       ),
-              //     ),
-              //     const SizedBox(width: 12),
-              //     const Text(
-              //       'ADVENTURE PASS',
-              //       style: TextStyle(
-              //         color: Color(0xFFD4A017),
-              //         fontSize: 28,
-              //         fontWeight: FontWeight.w900,
-              //         letterSpacing: 1,
-              //       ),
-              //     ),
-              //     const SizedBox(width: 12),
-              //     Expanded(
-              //       child: Container(
-              //         height: 2,
-              //         color: const Color(0xFFD4A017),
-              //       ),
-              //     ),
-              //   ],
-              // ),
               Row(
   children: [
 
@@ -210,24 +196,15 @@ class _AdventurePassCardPage extends StatelessWidget {
               const SizedBox(height: 40),
 
               // FRONT CARD
-              ClipRRect(
-                borderRadius: BorderRadius.circular(24),
-                child: Image.asset(
-                  'assets/images/Front.png',
-                  fit: BoxFit.contain,
-                ),
+              const _CardImage(
+                assetPath: 'assets/images/Front.png',
               ),
 
-              
               const SizedBox(height: 26),
 
               // BACK CARD
-              ClipRRect(
-                borderRadius: BorderRadius.circular(24),
-                child: Image.asset(
-                  'assets/images/Back.png',
-                  fit: BoxFit.contain,
-                ),
+              const _CardImage(
+                assetPath: 'assets/images/Back.png',
               ),
 
               const SizedBox(height: 30),
@@ -239,8 +216,8 @@ class _AdventurePassCardPage extends StatelessWidget {
   }
 }
 
-class _ProfileBackgroundGlow extends StatelessWidget {
-  const _ProfileBackgroundGlow();
+class _PlansBackgroundGlow extends StatelessWidget {
+  const _PlansBackgroundGlow();
 
   @override
   Widget build(BuildContext context) {
@@ -249,23 +226,23 @@ class _ProfileBackgroundGlow extends StatelessWidget {
         Positioned(
           top: 42,
           right: -72,
-          child: _ProfileGlowSpot(size: 190, opacity: 0.08),
+          child: _PlansGlowSpot(size: 190, opacity: 0.08),
         ),
         Positioned(
           bottom: 84,
           left: -88,
-          child: _ProfileGlowSpot(size: 220, opacity: 0.06),
+          child: _PlansGlowSpot(size: 220, opacity: 0.06),
         ),
       ],
     );
   }
 }
 
-class _ProfileGlowSpot extends StatelessWidget {
+class _PlansGlowSpot extends StatelessWidget {
   final double size;
   final double opacity;
 
-  const _ProfileGlowSpot({
+  const _PlansGlowSpot({
     required this.size,
     required this.opacity,
   });
@@ -285,18 +262,15 @@ class _ProfileGlowSpot extends StatelessWidget {
 
 class _CardImage extends StatelessWidget {
   final String assetPath;
-  final double height;
 
   const _CardImage({
     required this.assetPath,
-    required this.height,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      height: height,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
@@ -317,6 +291,7 @@ class _CardImage extends StatelessWidget {
         child: Image.asset(
           assetPath,
           fit: BoxFit.contain,
+          cacheWidth: 1200,
         ),
       ),
     );
@@ -347,36 +322,8 @@ class _SchemeContentCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Center(
-              // child: Icon(
-              //   Icons.workspace_premium_rounded,
-              //   color: goldPrimaryColor,
-              //   size: 52,
-              // ),
               ),
-          // const SizedBox(height: 18),
-
           const SizedBox(height: 18),
-          // Center(
-          //   child: Container(
-          //     padding: const EdgeInsets.symmetric(
-          //       horizontal: 16,
-          //       vertical: 8,
-          //     ),
-          //     decoration: BoxDecoration(
-          //       color: goldPrimaryColor.withOpacity(0.12),
-          //       borderRadius: BorderRadius.circular(30),
-          //       border: Border.all(color: premiumGoldBorderColor),
-          //     ),
-          //     child: const Text(
-          //       'One Card - Many Benefits',
-          //       style: TextStyle(
-          //         color: goldPrimaryColor,
-          //         fontWeight: FontWeight.w700,
-          //       ),
-          //     ),
-          //   ),
-          // ),
-          // TOP PREMIUM GOLD BANNER
           Container(
             width: double.infinity,
             padding: const EdgeInsets.symmetric(

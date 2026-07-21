@@ -20,6 +20,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final AuthController authController = Get.put(AuthController());
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
+  bool _obscurePassword = true;
 
   Future<void> _submitLogin() async {
     final login = _usernameController.text.trim();
@@ -160,12 +161,49 @@ class _LoginScreenState extends State<LoginScreen> {
                         // Password Field
                         TextField(
                           controller: _passwordController,
-                          obscureText: true,
+                          obscureText: _obscurePassword,
                           textInputAction: TextInputAction.done,
                           onSubmitted: (_) => _submitLogin(),
-                          decoration: const InputDecoration(
+                          style: const TextStyle(
+                            color: premiumTextColor,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          decoration: InputDecoration(
                             labelText: AppString.password,
-                            prefixIcon: Icon(Icons.lock_outline),
+                            prefixIcon: const Icon(
+                              Icons.lock_outline_rounded,
+                              color: goldPrimaryColor,
+                            ),
+                            suffixIcon: Padding(
+                              padding: const EdgeInsets.only(right: 8),
+                              child: IconButton(
+                                splashRadius: 22,
+                                onPressed: () {
+                                  setState(() {
+                                    _obscurePassword = !_obscurePassword;
+                                  });
+                                },
+                                icon: Container(
+                                  width: 34,
+                                  height: 34,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: goldPrimaryColor.withOpacity(0.08),
+                                    border: Border.all(
+                                      color: goldPrimaryColor.withOpacity(0.25),
+                                    ),
+                                  ),
+                                  child: Icon(
+                                    _obscurePassword
+                                        ? Icons.visibility_off_rounded
+                                        : Icons.visibility_rounded,
+                                    size: 18,
+                                    color: goldPrimaryColor,
+                                  ),
+                                ),
+                              ),
+                            ),
                           ),
                         ),
                         const SizedBox(height: 10),

@@ -8,11 +8,21 @@ import 'package:get/get.dart';
 class ServiceDetailController extends GetxController {
   bool isLoading = false;
   List<ServiceDetailData> serviceDetails = [];
+  final Map<String, List<ServiceDetailData>> _cache = {};
 
   Future<void> getServiceDetails({
     int? subserviceId,
     int? talukaId,
   }) async {
+    final cacheKey = "${subserviceId}_${talukaId ?? 0}";
+
+    // Return cached data instantly if it exists
+    if (_cache.containsKey(cacheKey)) {
+      serviceDetails = _cache[cacheKey]!;
+      update();
+      return;
+    }
+
     try {
       isLoading = true;
       serviceDetails = [];
@@ -25,6 +35,7 @@ class ServiceDetailController extends GetxController {
 
       if (response.status?.toLowerCase() == 'success') {
         serviceDetails = response.data;
+        _cache[cacheKey] = response.data;
       } else {
         serviceDetails = [];
         errorSnackBar(
@@ -40,5 +51,14 @@ class ServiceDetailController extends GetxController {
       isLoading = false;
       update();
     }
+  }
+
+  void clearCacheKey({int? subserviceId, int? talukaId}) {
+    final cacheKey = "${subserviceId}_${talukaId ?? 0}";
+    _cache.remove(cacheKey);
+  }
+
+  void clearAllCache() {
+    _cache.clear();
   }
 }
