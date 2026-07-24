@@ -5,6 +5,18 @@ import 'package:dw_echosphere_app/Api/ResponseModel/service_response_model.dart'
 import 'package:dw_echosphere_app/View/Utils/app_layout.dart';
 import 'package:get/get.dart';
 
+class HomeCategory {
+  final int? id;
+  final String name;
+  final String? image;
+
+  const HomeCategory({
+    this.id,
+    required this.name,
+    this.image,
+  });
+}
+
 class ServiceController extends GetxController {
   bool isLoading = false;
   bool isHomeLoading = false;
@@ -12,6 +24,38 @@ class ServiceController extends GetxController {
   List<ServiceData> services = [];
   List<ServiceData> popularServices = [];
   List<ServiceData> exploreServices = [];
+
+  List<HomeCategory> get popularHomeCategories =>
+      _buildHomeCategories(popularServices);
+  List<HomeCategory> get exploreHomeCategories =>
+      _buildHomeCategories(exploreServices);
+
+  static List<HomeCategory> _buildHomeCategories(List<ServiceData> services) {
+    final categories = <HomeCategory>[];
+    final usedIds = <int>{};
+    final usedNames = <String>{};
+
+    for (final service in services) {
+      final name = service.name?.trim();
+      if (name == null || name.isEmpty) continue;
+
+      final serviceId = service.id;
+      final normalizedName =
+          name.toLowerCase().replaceAll(RegExp(r'[^a-z0-9]+'), '');
+      if (serviceId != null && !usedIds.add(serviceId)) continue;
+      if (serviceId == null && !usedNames.add(normalizedName)) continue;
+
+      categories.add(
+        HomeCategory(
+          id: serviceId,
+          name: name,
+          image: service.image,
+        ),
+      );
+    }
+
+    return categories;
+  }
 
   Future<void> getServices({
     int? talukaId,

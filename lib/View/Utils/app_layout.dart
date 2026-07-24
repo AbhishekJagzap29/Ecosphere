@@ -1,5 +1,6 @@
 import 'package:dw_echosphere_app/View/Constant/app_color.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 // SUCCESS SNACKBAR
@@ -8,10 +9,13 @@ successSnackBar(
   String title,
   String message,
 ) {
+  HapticFeedback.lightImpact();
+  Get.closeCurrentSnackbar();
   return Get.showSnackbar(
     GetSnackBar(
       snackStyle: SnackStyle.FLOATING,
       snackPosition: SnackPosition.BOTTOM,
+      animationDuration: const Duration(milliseconds: 300),
       margin: const EdgeInsets.symmetric(
         horizontal: 20,
         vertical: 25,
@@ -33,7 +37,7 @@ successSnackBar(
           offset: Offset(0, 8),
         ),
       ],
-      duration: const Duration(seconds: 2),
+      duration: const Duration(milliseconds: 2800),
       padding: const EdgeInsets.symmetric(
         horizontal: 18,
         vertical: 16,
@@ -78,7 +82,7 @@ successSnackBar(
         child: Text(
           message,
           style: TextStyle(
-            color: Colors.white.withOpacity(0.82),
+            color: Colors.white.withOpacity(0.90),
             fontSize: 13.5,
             fontWeight: FontWeight.w500,
             height: 1.45,
@@ -95,10 +99,13 @@ errorSnackBar(
   String title,
   String error,
 ) {
+  HapticFeedback.mediumImpact();
+  Get.closeCurrentSnackbar();
   return Get.showSnackbar(
     GetSnackBar(
       snackStyle: SnackStyle.FLOATING,
       snackPosition: SnackPosition.BOTTOM,
+      animationDuration: const Duration(milliseconds: 300),
       margin: const EdgeInsets.symmetric(
         horizontal: 20,
         vertical: 25,
@@ -120,7 +127,7 @@ errorSnackBar(
           offset: Offset(0, 8),
         ),
       ],
-      duration: const Duration(seconds: 2),
+      duration: const Duration(milliseconds: 2800),
       padding: const EdgeInsets.symmetric(
         horizontal: 18,
         vertical: 16,
@@ -167,7 +174,7 @@ errorSnackBar(
           maxLines: 4,
           overflow: TextOverflow.ellipsis,
           style: TextStyle(
-            color: Colors.white.withOpacity(0.82),
+            color: Colors.white.withOpacity(0.90),
             fontSize: 13.5,
             fontWeight: FontWeight.w500,
             height: 1.45,
@@ -181,7 +188,7 @@ errorSnackBar(
 /// =========================
 /// PREMIUM LOADER
 /// =========================
-showCircular() {
+showPremiumLoader() {
   return const Center(
     child: SizedBox(
       height: 34,
